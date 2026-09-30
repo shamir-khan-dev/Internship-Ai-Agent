@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoTailor AI | Enterprise Resume & Application Agent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="app-header">
+        <div class="header-left">
+            <div class="logo-box">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-title">AutoTailor<span class="gradient-text">AI</span></span>
+            </div>
+            <div class="badge-status">
+                <span class="status-pulse"></span>
+                <span class="status-text">Gemini 3.8 Flash Connected</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <span class="master-badge">📄 Master: <code>shamir_khan_swe_resume.tex</code> (11pt ATS)</span>
+            <button id="btn-view-master" class="btn-secondary">View Master</button>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Container -->
+    <main class="dashboard-grid">
+        <!-- Left Panel: Job Input & Analysis -->
+        <section class="panel left-panel">
+            <div class="panel-header">
+                <h2>1. Target Internship / Job</h2>
+                <div class="header-actions">
+                    <button id="btn-sample-job" class="btn-ghost">Load Sample Job</button>
+                    <button id="btn-clear-job" class="btn-ghost">Clear</button>
+                </div>
+            </div>
+
+            <div class="job-input-group">
+                <div class="meta-row">
+                    <input type="text" id="company-name-input" placeholder="Company Name (optional, e.g. Vena, StackAdapt, IBM)" />
+                    <input type="text" id="role-title-input" placeholder="Role Title (e.g. Backend Intern, DevOps Co-op)" />
+                </div>
+                <textarea id="job-description-input" placeholder="Paste the job description, qualifications, and requirements here..."></textarea>
+            </div>
+
+            <div class="action-bar">
+                <button id="btn-analyze-job" class="btn-primary">
+                    <span class="btn-icon">🔍</span> Analyze & Scan ATS Keywords
+                </button>
+            </div>
+
+            <!-- Analysis Output Card -->
+            <div id="analysis-results" class="analysis-box hidden">
+                <div class="score-card">
+                    <div class="score-circle">
+                        <span id="match-score-num">--</span>
+                        <span class="score-label">ATS MATCH</span>
+                    </div>
+                    <div class="score-meta">
+                        <h3 id="detected-role">Analyzing...</h3>
+                        <p id="detected-company-term">Company & Term</p>
+                    </div>
+                </div>
+
+                <div class="keyword-section">
+                    <h4>✅ Matched Keywords:</h4>
+                    <div id="matched-keywords-list" class="tag-cloud"></div>
+                </div>
+
+                <div class="keyword-section">
+                    <h4>⚠️ Missing / High-Priority Keywords:</h4>
+                    <div id="missing-keywords-list" class="tag-cloud missing"></div>
+                </div>
+
+                <div class="insights-box">
+                    <h4>💡 Recruiter Strategy & Top Priorities:</h4>
+                    <ul id="top-priorities-list"></ul>
+                    <p id="recruiter-insights-text" class="insights-quote"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Panel: Tailor, LaTeX & Application Suite -->
+        <section class="panel right-panel">
+            <!-- Tabs -->
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="tab-resume">🎯 Tailored Resume</button>
+                <button class="tab-btn" data-tab="tab-cover-letter">✍️ Cover Letter</button>
+                <button class="tab-btn" data-tab="tab-qa">💬 Application Q&A</button>
+                <button class="tab-btn" data-tab="tab-auto-apply">🤖 Auto-Applier & Job Radar</button>
+            </div>
+
+            <!-- Tab 1: Resume Tailoring & Compilation -->
+            <div id="tab-resume" class="tab-content active">
+                <!-- Project Library Selection Bar -->
+                <div class="project-bank-container">
+                    <div class="project-bank-header">
+                        <span class="bank-title">📁 Verified Project Bank (AI Auto-Selects Top 3 for Job)</span>
+                        <span class="bank-sub">Click to inspect or force inclusion</span>
+                    </div>
+                    <div id="project-bank-pills" class="project-pills-row">
+                        <!-- Loaded dynamically via /api/projects -->
+                    </div>
+                </div>
+
+                <div class="tailor-controls">
+                    <input type="text" id="custom-instructions" placeholder="Custom tweak instructions (e.g. 'Prioritize AlphaPulse & Python', 'Focus on Kafka & C++')" />
+                    <button id="btn-tailor-resume" class="btn-primary">
+                        <span>✨ Generate Tailored Resume</span>
+                    </button>
+                </div>
+
+                <div id="tailoring-summary" class="summary-banner hidden">
+                    <div class="summary-header">
+                        <span class="badge-success">Projected ATS Match: <strong id="new-ats-score">--%</strong></span>
+                        <div class="tailor-meta-badges">
+                            <span id="selected-projects-badge" class="badge-accent">Selected Projects</span>
+                            <span id="compile-status-badge" class="badge-neutral">Ready to Compile</span>
+                        </div>
+                    </div>
+                    <ul id="changes-list"></ul>
+                </div>
+
+                <!-- Editor + Live PDF Split View -->
+                <div class="workspace-split">
+                    <div class="code-wrapper">
+                        <div class="editor-header">
+                            <span>LaTeX Source (1-Page ATS Standard)</span>
+                            <div class="editor-actions">
+                                <button id="btn-copy-tex" class="btn-ghost">Copy LaTeX</button>
+                                <button id="btn-compile-pdf" class="btn-accent">
+                                    <span class="btn-icon">⚡</span> Compile & Verify 1-Page PDF
+                                </button>
+                            </div>
+                        </div>
+                        <textarea id="latex-editor" spellcheck="false"></textarea>
+                    </div>
+
+                    <!-- PDF Preview Pane -->
+                    <div id="pdf-preview-container" class="pdf-preview-box hidden">
+                        <div class="pdf-header">
+                            <div class="pdf-meta">
+                                <span class="pdf-indicator-dot"></span>
+                                <span id="pdf-preview-title">Live 1-Page PDF Preview</span>
+                            </div>
+                            <div class="pdf-header-actions">
+                                <a id="btn-open-pdf-tab" href="#" target="_blank" class="btn-ghost">↗ Open Full Tab</a>
+                                <button id="btn-close-pdf-preview" class="btn-ghost">✕</button>
+                            </div>
+                        </div>
+                        <iframe id="pdf-preview-frame" src="about:blank" title="PDF Live Preview"></iframe>
+                    </div>
+                </div>
+
+                <div id="compile-result-card" class="compile-card hidden">
+                    <div class="compile-icon">📄</div>
+                    <div class="compile-details">
+                        <h4 id="compile-filename">Shamir_Khan_Tailored_Resume.pdf</h4>
+                        <p id="compile-pages-info">Verified: Exactly 1 Page</p>
+                    </div>
+                    <div class="compile-actions">
+                        <button id="btn-view-pdf-split" class="btn-secondary">👁️ View in Split Preview</button>
+                        <a id="btn-download-pdf" href="#" class="btn-success" download>⬇️ Download PDF</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Cover Letter Generator -->
+            <div id="tab-cover-letter" class="tab-content">
+                <div class="tab-header-row">
+                    <div>
+                        <h3>Authentic Cover Letter Generator</h3>
+                        <p>Human, conversational, non-robotic cover letter reflecting your real systems and engineering achievements.</p>
+                    </div>
+                    <button id="btn-generate-cover-letter" class="btn-primary">Generate Cover Letter</button>
+                </div>
+
+                <div class="textarea-card">
+                    <div class="card-toolbar">
+                        <span>Copy-Paste Ready Text</span>
+                        <button id="btn-copy-cover-letter" class="btn-ghost">📋 Copy Text</button>
+                    </div>
+                    <textarea id="cover-letter-output" placeholder="Click 'Generate Cover Letter' to write a tailored letter for this role..."></textarea>
+                </div>
+            </div>
+
+            <!-- Tab 3: Application Q&A Solver -->
+            <div id="tab-qa" class="tab-content">
+                <div class="tab-header-row">
+                    <div>
+                        <h3>Application Form & Interview Answer Solver</h3>
+                        <p>Generate high-conviction answers for specific application prompts (e.g. Workday, Greenhouse, Pinpoint).</p>
+                    </div>
+                </div>
+
+                <div class="qa-input-box">
+                    <label for="qa-question-input">Paste Any Application Question:</label>
+                    <div class="input-btn-row">
+                        <input type="text" id="qa-question-input" placeholder="e.g. 'Why is this the next challenge for you?', 'Why do you want to work at Coveo?'" />
+                        <button id="btn-generate-qa" class="btn-primary">Generate Answer</button>
+                    </div>
+                </div>
+
+                <div class="textarea-card">
+                    <div class="card-toolbar">
+                        <span>Tailored Responses (High-Impact + Punchy Variations)</span>
+                        <button id="btn-copy-qa" class="btn-ghost">📋 Copy Answer</button>
+                    </div>
+                    <textarea id="qa-output" placeholder="Your tailored answer will appear here..."></textarea>
+                </div>
+            </div>
+
+            <!-- Tab 4: Auto-Applier & Internship Radar -->
+            <div id="tab-auto-apply" class="tab-content">
+                <div class="tab-header-row">
+                    <div>
+                        <h3>🤖 Autonomous Internship Radar & Auto-Applier</h3>
+                        <p>Scans Google, LinkedIn, and GitHub Early Career feeds for Canadian & Remote SWE internships, then launches the Playwright browser bot to autofill the application and attach your tailored resume.</p>
+                    </div>
+                </div>
+
+                <!-- Radar Filters -->
+                <div class="radar-search-bar">
+                    <input type="text" id="radar-search-query" placeholder="Filter roles (e.g. 'Backend', 'Python', 'DevOps', 'Quant')..." />
+                    <input type="text" id="radar-search-location" placeholder="Location (e.g. 'Canada', 'Remote', 'Toronto')..." value="Canada" />
+                    <select id="radar-time-filter" class="time-filter-select">
+                        <option value="20" selected>🔥 Posted &le; 20h ago (Fresh Only)</option>
+                        <option value="24">⚡ Posted &le; 24h ago</option>
+                        <option value="48">🕒 Posted &le; 48h ago</option>
+                        <option value="0">🌐 All Available Positions</option>
+                    </select>
+                    <button id="btn-scan-jobs" class="btn-primary">
+                        <span class="btn-icon">⚡</span> Scan Active Internships
+                    </button>
+                </div>
+
+                <!-- Candidate Profile Snapshot Card -->
+                <div class="profile-snapshot-card">
+                    <div class="snapshot-header">
+                        <span>👤 Verified Candidate Profile (Autofill Source)</span>
+                        <span class="badge-success">Ready to Auto-Apply</span>
+                    </div>
+                    <div class="snapshot-grid">
+                        <div><strong>Candidate:</strong> Shamir Khan</div>
+                        <div><strong>Email:</strong> shamirk2121@gmail.com</div>
+                        <div><strong>Phone:</strong> (647) 606-6063</div>
+                        <div><strong>School:</strong> Wilfrid Laurier University (April 2028)</div>
+                        <div><strong>Location:</strong> Kitchener / Waterloo, ON (Canada Work Authorized: Yes)</div>
+                        <div><strong>Resume Attached:</strong> <code>Shamir_Khan_SWE_Latest.pdf</code></div>
+                    </div>
+                </div>
+
+                <!-- Bot Status Console Banner -->
+                <div id="bot-status-banner" class="bot-console hidden">
+                    <div class="bot-console-header">
+                        <span class="pulse-indicator"></span>
+                        <span id="bot-console-title">Browser Bot Active...</span>
+                    </div>
+                    <p id="bot-console-msg">Launching Playwright browser engine...</p>
+                </div>
+
+                <!-- Live Jobs Table / Grid -->
+                <div class="jobs-table-container">
+                    <div class="table-header-title">
+                        <span>🔥 Verified Live SWE Internships</span>
+                        <span id="jobs-count-badge" class="badge-neutral">Loading jobs...</span>
+                    </div>
+                    <div id="jobs-cards-list" class="jobs-list">
+                        <!-- Loaded dynamically via /api/jobs -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Master Resume Modal -->
+    <div id="master-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Master Resume Source (`shamir_khan_swe_resume.tex`)</h3>
+                <button id="btn-close-modal" class="btn-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <textarea id="master-tex-viewer" readonly></textarea>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-reset-to-master" class="btn-secondary">Reset Editor to Master</button>
+                <button id="btn-close-modal-2" class="btn-primary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
