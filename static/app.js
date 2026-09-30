@@ -530,7 +530,7 @@ Requirements & Qualifications:
     });
 
     // ==========================================
-    // Tab 4: Auto-Applier & Internship Radar
+    // Tab 4: Autonomous Internship Radar & Auto-Applier
     // ==========================================
     const btnScanJobs = document.getElementById('btn-scan-jobs');
     const radarSearchQuery = document.getElementById('radar-search-query');
@@ -542,58 +542,192 @@ Requirements & Qualifications:
     const botConsoleMsg = document.getElementById('bot-console-msg');
     const radarTimeFilter = document.getElementById('radar-time-filter');
 
-    async function loadJobs() {
-        if (!jobsCardsList) return;
-        const q = radarSearchQuery ? radarSearchQuery.value.trim() : '';
-        const loc = radarSearchLocation ? radarSearchLocation.value.trim() : 'Canada';
-        const maxH = radarTimeFilter ? radarTimeFilter.value : '20';
+    // Stats Ribbon Elements
+    const statTotalVal = document.getElementById('stat-total-val');
+    const statFreshVal = document.getElementById('stat-fresh-val');
+    const statQuantVal = document.getElementById('stat-quant-val');
+    const statAiVal = document.getElementById('stat-ai-val');
+    const statSystemVal = document.getElementById('stat-system-val');
+    const statSavedVal = document.getElementById('stat-saved-val');
+    const savedCountNum = document.getElementById('saved-count-num');
 
-        if (jobsCountBadge) jobsCountBadge.textContent = 'Scanning verified live feeds...';
+    // Local In-Memory Dataset & Filters State
+    let allLoadedJobs = [];
+    let activeCountry = 'all';
+    let activeDomain = 'all';
+    let savedJobIds = new Set(JSON.parse(localStorage.getItem('autotailor_saved_jobs') || '[]'));
 
-        try {
-            let url = `/api/jobs?query=${encodeURIComponent(q)}&location=${encodeURIComponent(loc)}`;
-            if (maxH && maxH !== '0') {
-                url += `&max_hours=${encodeURIComponent(maxH)}`;
+    function updateSavedUI() {
+        const count = savedJobIds.size;
+        if (savedCountNum) savedCountNum.textContent = count;
+        if (statSavedVal) statSavedVal.textContent = count;
+    }
+    updateSavedUI();
+
+    function toggleSaveJob(jobId, btnEl) {
+        if (savedJobIds.has(jobId)) {
+            savedJobIds.delete(jobId);
+            if (btnEl) {
+                btnEl.classList.remove('saved');
+                btnEl.innerHTML = '⭐ Save';
             }
-            const res = await fetch(url);
-            if (!res.ok) throw new Error('Failed to fetch jobs');
-            const data = await res.json();
-            const jobs = data.jobs || [];
-
-            const freshCount = jobs.filter(j => j.is_fresh_20h).length;
-            if (jobsCountBadge) {
-                if (maxH && maxH !== '0') {
-                    jobsCountBadge.textContent = `🔥 ${jobs.length} Positions (Posted ≤ ${maxH}h ago)`;
-                } else {
-                    jobsCountBadge.textContent = `🔥 ${freshCount} Fresh (≤ 20h) • ${jobs.length} Total Positions`;
-                }
+            showToast('Removed from saved applications', 'ℹ️');
+        } else {
+            savedJobIds.add(jobId);
+            if (btnEl) {
+                btnEl.classList.add('saved');
+                btnEl.innerHTML = '★ Saved';
             }
-            renderJobs(jobs);
-        } catch (e) {
-            console.error('Jobs fetch error:', e);
-            if (jobsCountBadge) jobsCountBadge.textContent = 'Scan error';
+            showToast('Saved to your application tracker!', '⭐');
+        }
+        localStorage.setItem('autotailor_saved_jobs', JSON.stringify(Array.from(savedJobIds)));
+        updateSavedUI();
+
+        if (activeCountry === 'saved') {
+            applyClientFilters();
         }
     }
 
-    if (radarTimeFilter) {
-        radarTimeFilter.addEventListener('change', () => {
-            loadJobs();
+    // Instant Client-Side Filter Engine (0ms Latency)
+    function applyClientFilters() {
+        if (!jobsCardsList) return;
+        
+        const q = radarSearchQuery ? radarSearchQuery.value.trim().toLowerCase() : '';
+        const loc = radarSearchLocation ? radarSearchLocation.value.trim().toLowerCase() : '';
+        const maxH = radarTimeFilter ? parseFloat(radarTimeFilter.value) : 0;
+
+        // Dynamic stats calculation across entire dataset
+        let freshCount = 0;
+        let quantCount = 0;
+        let aiCount = 0;
+        let systemCount = 0;
+
+        allLoadedJobs.forEach(j => {
+            if (j.is_fresh_20h) freshCount++;
+            if (j.domain === 'quant') quantCount++;
+            if (j.domain === 'ai') aiCount++;
+            if (j.domain === 'backend') systemCount++;
         });
+
+        if (statTotalVal) statTotalVal.textContent = allLoadedJobs.length.toLocaleString() + '+';
+        if (statFreshVal) statFreshVal.textContent = freshCount.toLocaleString();
+        if (statQuantVal) statQuantVal.textContent = quantCount.toLocaleString();
+        if (statAiVal) statAiVal.textContent = aiCount.toLocaleString();
+        if (statSystemVal) statSystemVal.textContent = systemCount.toLocaleString();
+        updateSavedUI();
+
+        const filtered = allLoadedJobs.filter(j => {
+            // Market Filter
+            if (activeCountry === 'saved') {
+                if (!savedJobIds.has(j.id)) return false;
+            } else if (activeCountry !== 'all') {
+                if (j.country !== activeCountry) {
+                    if (activeCountry === 'remote' && !j.location.toLowerCase().includes('remote')) return false;
+                    if (activeCountry !== 'remote') return false;
+                }
+            }
+
+            // Technical Domain Filter
+            if (activeDomain !== 'all') {
+                if (j.domain !== activeDomain) return false;
+            }
+
+            // Freshness Filter
+            if (maxH > 0) {
+                if (j.posted_hours_ago > maxH) return false;
+            }
+
+            // Location Text Filter
+            if (loc && loc !== 'all') {
+                const jLoc = (j.location || '').toLowerCase();
+                if (loc === 'canada' || loc === 'ca') {
+                    if (!['canada', 'toronto', 'vancouver', 'montreal', 'waterloo', 'ottawa', 'calgary', 'bc', 'on', 'qc', 'ab'].some(c => jLoc.includes(c))) {
+                        return false;
+                    }
+                } else if (!jLoc.includes(loc)) {
+                    return false;
+                }
+            }
+
+            // Search Query Filter
+            if (q) {
+                const searchable = `${j.company} ${j.title} ${(j.tags || []).join(' ')} ${j.location} ${j.domain} ${j.source}`.toLowerCase();
+                if (!searchable.includes(q)) return false;
+            }
+
+            return true;
+        });
+
+        const filterSummary = [];
+        if (activeCountry !== 'all') filterSummary.push(activeCountry === 'saved' ? 'Saved' : activeCountry.toUpperCase());
+        if (activeDomain !== 'all') filterSummary.push(activeDomain.toUpperCase());
+        if (maxH > 0) filterSummary.push(`≤ ${maxH}h`);
+        const labelExtra = filterSummary.length > 0 ? ` (${filterSummary.join(' • ')})` : '';
+
+        if (jobsCountBadge) {
+            jobsCountBadge.textContent = `${filtered.length} Positions${labelExtra}`;
+        }
+
+        renderJobs(filtered);
     }
 
-    // Debounced search input
+    // Market Pills Click
+    document.querySelectorAll('.market-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.market-pill').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeCountry = btn.getAttribute('data-country') || 'all';
+            applyClientFilters();
+        });
+    });
+
+    // Domain Pills Click
+    document.querySelectorAll('.domain-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.domain-pill').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeDomain = btn.getAttribute('data-domain') || 'all';
+            applyClientFilters();
+        });
+    });
+
+    // Debounced Search Inputs (Instant 120ms feedback)
     let searchDebounce = null;
     if (radarSearchQuery) {
         radarSearchQuery.addEventListener('input', () => {
             clearTimeout(searchDebounce);
-            searchDebounce = setTimeout(loadJobs, 300);
+            searchDebounce = setTimeout(applyClientFilters, 120);
         });
     }
     if (radarSearchLocation) {
         radarSearchLocation.addEventListener('input', () => {
             clearTimeout(searchDebounce);
-            searchDebounce = setTimeout(loadJobs, 350);
+            searchDebounce = setTimeout(applyClientFilters, 120);
         });
+    }
+
+    if (radarTimeFilter) {
+        radarTimeFilter.addEventListener('change', () => {
+            applyClientFilters();
+        });
+    }
+
+    // Load full live dataset from server
+    async function loadJobs() {
+        if (!jobsCardsList) return;
+        if (jobsCountBadge) jobsCountBadge.textContent = 'Syncing 1,750+ verified feeds...';
+
+        try {
+            const res = await fetch('/api/jobs?country=all');
+            if (!res.ok) throw new Error('Failed to fetch jobs');
+            const data = await res.json();
+            allLoadedJobs = data.jobs || [];
+
+            applyClientFilters();
+        } catch (e) {
+            console.error('Jobs fetch error:', e);
+            if (jobsCountBadge) jobsCountBadge.textContent = 'Sync error — retrying';
+        }
     }
 
     function renderJobs(jobs) {
@@ -602,20 +736,36 @@ Requirements & Qualifications:
 
         if (jobs.length === 0) {
             jobsCardsList.innerHTML = `
-                <div style="padding: 40px 20px; text-align: center; color: var(--text-tertiary); background: var(--apple-surface-card); border-radius: var(--radius-lg); border: 1px solid var(--apple-border);">
-                    <div style="font-size: 32px; margin-bottom: 8px;">🔍</div>
-                    <div style="font-size: 14px; font-weight: 500; color: var(--text-secondary);">No matching internships found</div>
-                    <div style="font-size: 12.5px; margin-top: 4px;">Try changing the time filter or clearing search keywords.</div>
+                <div style="padding: 44px 20px; text-align: center; color: var(--text-tertiary); background: var(--apple-surface-card); border-radius: var(--radius-lg); border: 1px solid var(--apple-border);">
+                    <div style="font-size: 36px; margin-bottom: 8px;">🔍</div>
+                    <div style="font-size: 14.5px; font-weight: 600; color: var(--text-secondary);">No matching internships found</div>
+                    <div style="font-size: 12.5px; margin-top: 4px; color: var(--text-tertiary);">Try clearing keywords, selecting "All Locations", or switching technical domains.</div>
                 </div>
             `;
             return;
         }
 
-        jobs.forEach(job => {
+        // Render first 100 for high performance, scroll for more
+        const slice = jobs.slice(0, 100);
+
+        slice.forEach(job => {
             const card = document.createElement('div');
             card.className = 'job-card';
 
             const tagsHtml = (job.tags || []).map(t => `<span class="job-tag">${t}</span>`).join('');
+            const isSaved = savedJobIds.has(job.id);
+
+            // Country & Domain Badges
+            const countryLabel = job.country === 'ca' ? '🇨🇦 Canada' : job.country === 'remote' ? '☁️ Remote' : '🇺🇸 USA';
+            const domainLabels = {
+                'quant': '📈 Quant & Trading',
+                'ai': '🤖 AI & ML',
+                'backend': '⚙️ Systems / C++',
+                'cloud': '🛡️ Cloud / Sec',
+                'fullstack': '🌐 Full-Stack',
+                'swe': '💻 SWE'
+            };
+            const domainBadge = domainLabels[job.domain] || '💻 SWE';
 
             card.innerHTML = `
                 <div class="job-info-col">
@@ -631,6 +781,8 @@ Requirements & Qualifications:
                         ${job.is_fresh_20h 
                             ? `<span class="badge-fresh">🔥 Posted ${job.posted_time_label || (job.posted_hours_ago + 'h ago')}</span>` 
                             : `<span class="badge-time">🕒 Posted ${job.posted_time_label || (job.posted_hours_ago + 'h ago')}</span>`}
+                        <span class="country-badge">${countryLabel}</span>
+                        <span class="domain-badge">${domainBadge}</span>
                         <span>📍 ${job.location}</span>
                         <span>🗓️ ${job.term || 'Upcoming Term'}</span>
                         <span class="badge-success">${job.match_score || 92}% Match</span>
@@ -641,6 +793,9 @@ Requirements & Qualifications:
                     </div>
                 </div>
                 <div class="job-action-col">
+                    <button class="btn-save-job ${isSaved ? 'saved' : ''}" data-id="${job.id}">
+                        ${isSaved ? '★ Saved' : '⭐ Save'}
+                    </button>
                     <a href="${job.apply_url}" target="_blank" rel="noopener noreferrer" class="btn-direct-link" title="Open direct application in new tab">
                         <span>↗ Direct Apply</span>
                     </a>
@@ -652,6 +807,13 @@ Requirements & Qualifications:
                     </button>
                 </div>
             `;
+
+            // Wire Save button
+            const btnSave = card.querySelector('.btn-save-job');
+            btnSave.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleSaveJob(job.id, btnSave);
+            });
 
             // Wire Auto-Apply button
             const btnRun = card.querySelector('.btn-run-autofill');
@@ -684,6 +846,13 @@ Requirements & Qualifications:
 
             jobsCardsList.appendChild(card);
         });
+
+        if (jobs.length > 100) {
+            const moreBanner = document.createElement('div');
+            moreBanner.style.cssText = 'padding: 16px; text-align: center; color: var(--text-tertiary); font-size: 12.5px;';
+            moreBanner.textContent = `Showing top 100 of ${jobs.length.toLocaleString()} matching positions. Use search or domain filters to narrow down.`;
+            jobsCardsList.appendChild(moreBanner);
+        }
     }
 
     async function triggerAutofill(job) {

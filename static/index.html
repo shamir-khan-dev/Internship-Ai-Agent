@@ -226,18 +226,49 @@
                     </div>
                 </div>
 
+                <!-- Global Market Stats Ribbon -->
+                <div class="stats-ribbon">
+                    <div class="stat-pill"><span class="stat-val" id="stat-total-val">1,750+</span> <span class="stat-lbl">Active Roles</span></div>
+                    <div class="stat-pill fresh"><span class="stat-val" id="stat-fresh-val">140+</span> <span class="stat-lbl">Fresh (&le; 20h)</span></div>
+                    <div class="stat-pill quant"><span class="stat-val" id="stat-quant-val">100+</span> <span class="stat-lbl">Quant & Trading</span></div>
+                    <div class="stat-pill ai"><span class="stat-val" id="stat-ai-val">300+</span> <span class="stat-lbl">AI & ML</span></div>
+                    <div class="stat-pill system"><span class="stat-val" id="stat-system-val">70+</span> <span class="stat-lbl">Systems & C++</span></div>
+                    <div class="stat-pill saved"><span class="stat-val" id="stat-saved-val">0</span> <span class="stat-lbl">Saved / Tracked</span></div>
+                </div>
+
+                <!-- Geographic Market Selector -->
+                <div class="filter-pill-group">
+                    <span class="filter-group-lbl">Market:</span>
+                    <button class="market-pill active" data-country="all">🌐 All Locations (US, CA, Remote)</button>
+                    <button class="market-pill" data-country="ca">🇨🇦 Canada Only</button>
+                    <button class="market-pill" data-country="us">🇺🇸 United States</button>
+                    <button class="market-pill" data-country="remote">☁️ Remote Only</button>
+                    <button class="market-pill" data-country="saved" id="btn-show-saved">⭐ Saved / Applied (<span id="saved-count-num">0</span>)</button>
+                </div>
+
+                <!-- Technical Domain Selector -->
+                <div class="filter-pill-group">
+                    <span class="filter-group-lbl">Domain:</span>
+                    <button class="domain-pill active" data-domain="all">All Disciplines</button>
+                    <button class="domain-pill" data-domain="quant">📈 Quant & Trading</button>
+                    <button class="domain-pill" data-domain="backend">⚙️ Backend & Systems (C++)</button>
+                    <button class="domain-pill" data-domain="ai">🤖 AI & Machine Learning</button>
+                    <button class="domain-pill" data-domain="cloud">🛡️ Cloud & Security</button>
+                    <button class="domain-pill" data-domain="fullstack">🌐 Full-Stack & Web</button>
+                </div>
+
                 <!-- Radar Filters -->
                 <div class="radar-search-bar">
-                    <input type="text" id="radar-search-query" placeholder="Filter roles (e.g. 'Backend', 'Python', 'DevOps', 'Quant')..." />
-                    <input type="text" id="radar-search-location" placeholder="Location (e.g. 'Canada', 'Remote', 'Toronto')..." value="Canada" />
+                    <input type="text" id="radar-search-query" placeholder="Search title, company, skills (e.g. 'Citadel', 'Python', 'Kafka', 'Vision')..." />
+                    <input type="text" id="radar-search-location" placeholder="City or state filter (e.g. 'Toronto', 'NYC', 'Remote')..." />
                     <select id="radar-time-filter" class="time-filter-select">
-                        <option value="20" selected>🔥 Posted &le; 20h ago (Fresh Only)</option>
+                        <option value="20">🔥 Posted &le; 20h ago (Fresh Only)</option>
                         <option value="24">⚡ Posted &le; 24h ago</option>
                         <option value="48">🕒 Posted &le; 48h ago</option>
-                        <option value="0">🌐 All Available Positions</option>
+                        <option value="0" selected>🌐 All Available Positions</option>
                     </select>
                     <button id="btn-scan-jobs" class="btn-primary">
-                        <span class="btn-icon">⚡</span> Scan Internships
+                        <span class="btn-icon">⚡</span> Refresh Radar
                     </button>
                 </div>
 

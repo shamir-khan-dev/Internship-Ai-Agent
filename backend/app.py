@@ -449,8 +449,8 @@ class AutofillRequest(BaseModel):
     headless: Optional[bool] = False
 
 @app.get("/api/jobs")
-async def get_jobs(query: str = "", location: str = "", max_hours: Optional[float] = None):
-    jobs = fetch_live_internships(query=query, location=location, max_hours=max_hours)
+async def get_jobs(query: str = "", location: str = "", domain: str = "", country: str = "", max_hours: Optional[float] = None):
+    jobs = fetch_live_internships(query=query, location=location, domain=domain, country=country, max_hours=max_hours)
     return {"jobs": jobs, "total": len(jobs)}
 
 @app.get("/api/candidate-profile")

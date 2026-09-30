@@ -1049,9 +1049,140 @@ textarea#cover-letter-output, textarea#qa-output {
     flex: 1;
 }
 
-/* ==========================================================================
-   Tab 4: Autonomous Internship Radar & Job Cards
-   ========================================================================== */
+/* Stats Ribbon (Apple Keynote Metrics) */
+.stats-ribbon {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 2px;
+}
+
+.stat-pill {
+    background: var(--apple-surface-card);
+    border: 1px solid var(--apple-border);
+    border-radius: var(--radius-pill);
+    padding: 7px 14px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    box-shadow: var(--apple-inner-highlight);
+    transition: all 0.2s var(--apple-ease);
+}
+
+.stat-pill:hover {
+    border-color: rgba(255, 255, 255, 0.18);
+    transform: translateY(-1px);
+}
+
+.stat-val {
+    font-weight: 700;
+    color: #ffffff;
+    font-family: var(--font-mono);
+}
+
+.stat-lbl {
+    color: var(--text-secondary);
+    font-size: 11.5px;
+}
+
+.stat-pill.fresh .stat-val { color: var(--apple-orange); }
+.stat-pill.quant .stat-val { color: #38bdf8; }
+.stat-pill.ai .stat-val { color: var(--apple-purple); }
+.stat-pill.system .stat-val { color: var(--apple-green); }
+.stat-pill.saved .stat-val { color: #facc15; }
+
+/* Filter Pill Groups (Markets & Domains) */
+.filter-pill-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--apple-border);
+    border-radius: var(--radius-lg);
+    padding: 8px 12px;
+}
+
+.filter-group-lbl {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-right: 4px;
+}
+
+.market-pill, .domain-pill {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--apple-border);
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition: all 0.2s var(--apple-ease);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.market-pill:hover, .domain-pill:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+.market-pill.active, .domain-pill.active {
+    background: rgba(0, 113, 227, 0.2);
+    border-color: var(--apple-blue);
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 113, 227, 0.35);
+    font-weight: 600;
+}
+
+.btn-save-job {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--apple-border);
+    color: var(--text-secondary);
+    border-radius: var(--radius-pill);
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-save-job:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+}
+
+.btn-save-job.saved {
+    background: rgba(250, 204, 21, 0.18);
+    border-color: rgba(250, 204, 21, 0.6);
+    color: #facc15;
+}
+
+.country-badge {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--apple-border);
+    color: #e2e8f0;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: var(--radius-pill);
+}
+
+.domain-badge {
+    background: rgba(0, 113, 227, 0.14);
+    border: 1px solid rgba(0, 113, 227, 0.3);
+    color: #38bdf8;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: var(--radius-pill);
+}
 
 .radar-search-bar {
     display: grid;
