@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoTailor AI</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="popup-container">
+        <!-- Header -->
+        <div class="popup-header">
+            <div class="logo">
+                <span class="icon">⚡</span>
+                <span class="title">AutoTailor <strong>AI</strong></span>
+            </div>
+            <div id="agent-status" class="status-badge">
+                <span class="status-dot"></span>
+                <span id="status-text">Connecting...</span>
+            </div>
+        </div>
+
+        <!-- Candidate Profile -->
+        <div class="profile-card">
+            <div class="profile-header">
+                <strong>Shamir Khan</strong>
+                <span class="sub">Wilfrid Laurier University (CS)</span>
+            </div>
+            <div class="profile-meta">
+                <span>📍 Kitchener, ON</span>
+                <span>🎓 Class of 2028</span>
+                <span>🇨🇦 Work Auth: Yes</span>
+            </div>
+        </div>
+
+        <!-- 1-Click Autofill Button -->
+        <button id="btn-popup-autofill" class="btn-autofill">
+            <span>⚡ 1-Click Autofill Current Tab</span>
+        </button>
+
+        <div id="autofill-feedback" class="feedback-msg hidden"></div>
+
+        <!-- Quick AI Q&A Solver -->
+        <div class="qa-section">
+            <div class="qa-label">Ask Gemini 3.8 Flash (Application Q&A):</div>
+            <input type="text" id="qa-input" placeholder="e.g. 'Why do you want to join this team?'" />
+            <button id="btn-popup-qa" class="btn-secondary">Solve with Gemini</button>
+            <textarea id="qa-result" class="hidden" readonly placeholder="Tailored answer will appear here..."></textarea>
+        </div>
+
+        <!-- Footer -->
+        <div class="popup-footer">
+            <a href="http://localhost:8500" target="_blank" class="footer-link">↗ Open Full Dashboard</a>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
