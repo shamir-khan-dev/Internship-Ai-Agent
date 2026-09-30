@@ -57,10 +57,10 @@ PROJECTS_CATALOG = {
         "category": "FinTech / Quant / AI / Python",
         "github": "https://github.com/shamir-khan-dev/stock-analyzer",
         "live": "http://127.0.0.1:8000",
-        "dates": "Jan 2026 -- Present",
+        "dates": "Sept 2026 -- Present",
         "skills": ["Python", "FastAPI", "NumPy", "Pandas", "OpenCV", "Gemini AI", "Vectorized TA", "Quantitative Modeling", "Backtesting"],
         "latex_block": r"""\resumeProjectHeading
-            {\textbf{AlphaPulse -- Quantitative Terminal \& AI TradeBot} $|$ \emph{\href{https://github.com/shamir-khan-dev/stock-analyzer}{GitHub}}}{Jan 2026 -- Present}
+            {\textbf{AlphaPulse -- Quantitative Terminal \& AI TradeBot} $|$ \emph{\href{https://github.com/shamir-khan-dev/stock-analyzer}{GitHub}}}{Sept 2026 -- Present}
           \resumeItemListStart
             \resumeItem{\textbf{Engineered a high-throughput quantitative trading terminal} using \textbf{Python}, \textbf{FastAPI}, and \textbf{NumPy/Pandas}, computing multi-factor confluence scoring across 6 vectorized technical indicators (EMA ribbons, Supertrend, ATR, MACD).}
             \resumeItem{\textbf{Architected a dual-mode Computer Vision engine} with \textbf{OpenCV} and \textbf{multimodal Gemini AI} to parse clipboard chart screenshots (\texttt{Ctrl+V}), extracting candlestick distribution and trend momentum with zero API latency.}
@@ -439,7 +439,7 @@ Provide 2 tailored variations:
         raise HTTPException(status_code=500, detail=f"QA generation failed: {str(e)}")
 
 # --- Job Radar & Auto-Apply Endpoints ---
-from backend.job_finder import fetch_live_internships
+from backend.job_finder import fetch_live_internships, _CACHE as _JOB_CACHE
 from backend.autobot import run_autofill_job
 from backend.candidate_profile import CANDIDATE_PROFILE
 
@@ -449,7 +449,10 @@ class AutofillRequest(BaseModel):
     headless: Optional[bool] = False
 
 @app.get("/api/jobs")
-async def get_jobs(query: str = "", location: str = "", domain: str = "", country: str = "", max_hours: Optional[float] = None):
+async def get_jobs(query: str = "", location: str = "", domain: str = "", country: str = "", max_hours: Optional[float] = None, refresh: int = 0):
+    if refresh:
+        _JOB_CACHE["jobs"] = []
+        _JOB_CACHE["last_fetched"] = 0
     jobs = fetch_live_internships(query=query, location=location, domain=domain, country=country, max_hours=max_hours)
     return {"jobs": jobs, "total": len(jobs)}
 
