@@ -71,16 +71,48 @@ document.addEventListener('DOMContentLoaded', () => {
             tabContents.forEach(c => c.classList.remove('active'));
 
             btn.classList.add('active');
-            document.getElementById(targetTab).classList.add('active');
+            const targetEl = document.getElementById(targetTab);
+            if (targetEl) {
+                targetEl.classList.add('active');
+            }
         });
     });
 
-    // Toast helper
-    function showToast(message) {
+    // Apple Dynamic Island Toast Helper
+    let toastTimeout = null;
+    function showToast(message, icon = '✓') {
         const toast = document.getElementById('toast');
-        toast.textContent = message;
+        if (!toast) return;
+        if (toastTimeout) clearTimeout(toastTimeout);
+        toast.innerHTML = `<span style="color: var(--apple-green); font-weight: 700;">${icon}</span> <span>${message}</span>`;
         toast.classList.remove('hidden');
-        setTimeout(() => toast.classList.add('hidden'), 3500);
+        toastTimeout = setTimeout(() => {
+            toast.classList.add('hidden');
+        }, 3400);
+    }
+
+    // Number Counting Animation for Match Score
+    function animateScoreCounter(targetScore) {
+        if (!matchScoreNum) return;
+        let start = 0;
+        const duration = 750;
+        const startTime = performance.now();
+
+        function update(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            // Ease out cubic
+            const ease = 1 - Math.pow(1 - progress, 3);
+            const current = Math.floor(start + (targetScore - start) * ease);
+            matchScoreNum.textContent = current + '%';
+
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            } else {
+                matchScoreNum.textContent = targetScore + '%';
+            }
+        }
+        requestAnimationFrame(update);
     }
 
     // Load Project Catalog
@@ -118,13 +150,13 @@ document.addEventListener('DOMContentLoaded', () => {
             pill.addEventListener('click', () => {
                 if (selectedProjectIds.has(p.id)) {
                     if (selectedProjectIds.size <= 2) {
-                        showToast('Keep at least 2 projects selected for a complete 1-page resume.');
+                        showToast('Keep at least 2 projects selected for a complete 1-page resume.', '⚠️');
                         return;
                     }
                     selectedProjectIds.delete(p.id);
                 } else {
                     if (selectedProjectIds.size >= 4) {
-                        showToast('Maximum 3-4 projects fit on a strict 1-page resume.');
+                        showToast('Maximum 3-4 projects fit on a strict 1-page resume.', 'ℹ️');
                     }
                     selectedProjectIds.add(p.id);
                 }
@@ -191,7 +223,7 @@ Requirements & Qualifications:
     btnAnalyze.addEventListener('click', async () => {
         const text = jobDescInput.value.trim();
         if (!text) {
-            showToast('Please paste a job description first.');
+            showToast('Please paste a job description first.', '⚠️');
             return;
         }
 
@@ -217,7 +249,7 @@ Requirements & Qualifications:
             if (!companyInput.value && data.company_name) companyInput.value = data.company_name;
             if (!roleInput.value && data.role_title) roleInput.value = data.role_title;
 
-            matchScoreNum.textContent = data.match_score + '%';
+            animateScoreCounter(data.match_score || 85);
             detectedRole.textContent = data.role_title || 'Software Engineering Role';
             detectedCompanyTerm.textContent = `${data.company_name || 'Target Company'} • ${data.term || 'Upcoming Term'} • ${data.location || 'Remote/Hybrid'}`;
 
@@ -247,7 +279,7 @@ Requirements & Qualifications:
             alert('Error analyzing job: ' + e.message);
         } finally {
             btnAnalyze.disabled = false;
-            btnAnalyze.innerHTML = '<span class="btn-icon">🔍</span> Analyze & Scan ATS Keywords';
+            btnAnalyze.innerHTML = '<span class="btn-icon">🔍</span> Scan ATS & Extract Keywords';
         }
     });
 
@@ -255,7 +287,7 @@ Requirements & Qualifications:
     btnTailor.addEventListener('click', async () => {
         const text = jobDescInput.value.trim();
         if (!text) {
-            showToast('Please paste a job description on the left first.');
+            showToast('Please paste a job description on the left first.', '⚠️');
             return;
         }
 
@@ -294,7 +326,7 @@ Requirements & Qualifications:
                 .map(ch => `<li>${ch}</li>`).join('');
 
             tailoringSummary.classList.remove('hidden');
-            showToast('Resume successfully tailored! Ready to compile 1-page PDF.');
+            showToast('Resume tailored! Ready to compile 1-page PDF.');
         } catch (e) {
             alert('Error tailoring resume: ' + e.message);
         } finally {
@@ -307,7 +339,7 @@ Requirements & Qualifications:
     btnCompile.addEventListener('click', async () => {
         const tex = latexEditor.value.trim();
         if (!tex) {
-            showToast('No LaTeX code to compile.');
+            showToast('No LaTeX code to compile.', '⚠️');
             return;
         }
 
@@ -339,37 +371,35 @@ Requirements & Qualifications:
             compilePagesInfo.textContent = `Page Count: ${data.page_count} Page${data.page_count > 1 ? 's (Warning: Ideal is 1 Page)' : ' (Verified 100% 1-Page ATS Standard)'}`;
             
             if (data.page_count === 1) {
-                compilePagesInfo.style.color = '#34d399';
+                compilePagesInfo.style.color = '#30d158';
             } else {
-                compilePagesInfo.style.color = '#f59e0b';
+                compilePagesInfo.style.color = '#ff9f0a';
             }
 
             btnDownloadPdf.href = data.download_url;
             compileResultCard.classList.remove('hidden');
 
             // Load into Live PDF preview split
-            loadPdfPreview(data.preview_url || `/api/preview/${cleanName}`);
+            pdfPreviewFrame.src = data.download_url;
+            btnOpenPdfTab.href = data.download_url;
+            pdfPreviewContainer.classList.remove('hidden');
 
-            showToast(`PDF Compiled successfully! (${data.page_count} page${data.page_count > 1 ? 's' : ''})`);
+            showToast(`PDF Compiled: ${data.page_count} Page!`);
         } catch (e) {
-            alert('Compilation error: ' + e.message);
+            alert('PDF Compilation Notice: ' + e.message);
         } finally {
             btnCompile.disabled = false;
-            btnCompile.innerHTML = '<span class="btn-icon">⚡</span> Compile & Verify 1-Page PDF';
+            btnCompile.innerHTML = '<span class="btn-icon">⚡</span> Compile 1-Page PDF';
         }
     });
 
-    function loadPdfPreview(previewUrl) {
-        if (!pdfPreviewContainer || !pdfPreviewFrame) return;
-        pdfPreviewFrame.src = previewUrl;
-        btnOpenPdfTab.href = previewUrl;
-        pdfPreviewContainer.classList.remove('hidden');
-    }
-
+    // Toggle PDF Split Preview
     if (btnViewPdfSplit) {
         btnViewPdfSplit.addEventListener('click', () => {
-            if (latestPdfFilename) {
-                loadPdfPreview(`/api/preview/${latestPdfFilename}`);
+            if (btnDownloadPdf.href && btnDownloadPdf.href !== '#') {
+                pdfPreviewFrame.src = btnDownloadPdf.href;
+                pdfPreviewContainer.classList.remove('hidden');
+                pdfPreviewContainer.scrollIntoView({ behavior: 'smooth' });
             }
         });
     }
@@ -377,7 +407,6 @@ Requirements & Qualifications:
     if (btnClosePdfPreview) {
         btnClosePdfPreview.addEventListener('click', () => {
             pdfPreviewContainer.classList.add('hidden');
-            pdfPreviewFrame.src = 'about:blank';
         });
     }
 
@@ -390,22 +419,17 @@ Requirements & Qualifications:
     // Generate Cover Letter
     btnCoverLetter.addEventListener('click', async () => {
         const text = jobDescInput.value.trim();
-        if (!text) {
-            showToast('Please paste a job description first.');
-            return;
-        }
-
         btnCoverLetter.disabled = true;
-        btnCoverLetter.textContent = 'Writing authentic cover letter...';
+        btnCoverLetter.textContent = 'Generating with Gemini...';
 
         try {
             const res = await fetch('/api/generate-cover-letter', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    job_text: text,
+                    job_text: text || 'Software Engineering Internship',
                     company_name: companyInput.value.trim() || 'Hiring Team',
-                    role_title: roleInput.value.trim() || 'Software Engineer Intern'
+                    role_title: roleInput.value.trim() || 'Software Engineering Intern'
                 })
             });
 
@@ -416,9 +440,9 @@ Requirements & Qualifications:
 
             const data = await res.json();
             coverLetterOutput.value = data.cover_letter;
-            showToast('Cover letter generated!');
+            showToast('Authentic cover letter generated!');
         } catch (e) {
-            alert('Error generating cover letter: ' + e.message);
+            alert('Error: ' + e.message);
         } finally {
             btnCoverLetter.disabled = false;
             btnCoverLetter.textContent = 'Generate Cover Letter';
@@ -430,18 +454,18 @@ Requirements & Qualifications:
         showToast('Cover letter copied to clipboard!');
     });
 
-    // Generate QA Answer
+    // Application Q&A
     btnQA.addEventListener('click', async () => {
-        const text = jobDescInput.value.trim();
         const question = qaQuestionInput.value.trim();
+        const text = jobDescInput.value.trim();
 
         if (!question) {
-            showToast('Please enter an application question.');
+            showToast('Please enter an application question first.', '⚠️');
             return;
         }
 
         btnQA.disabled = true;
-        btnQA.textContent = 'Generating answer...';
+        btnQA.textContent = 'Solving with Gemini...';
 
         try {
             const res = await fetch('/api/generate-qa', {
@@ -516,7 +540,6 @@ Requirements & Qualifications:
     const botStatusBanner = document.getElementById('bot-status-banner');
     const botConsoleTitle = document.getElementById('bot-console-title');
     const botConsoleMsg = document.getElementById('bot-console-msg');
-
     const radarTimeFilter = document.getElementById('radar-time-filter');
 
     async function loadJobs() {
@@ -525,7 +548,7 @@ Requirements & Qualifications:
         const loc = radarSearchLocation ? radarSearchLocation.value.trim() : 'Canada';
         const maxH = radarTimeFilter ? radarTimeFilter.value : '20';
 
-        if (jobsCountBadge) jobsCountBadge.textContent = 'Scanning live feeds...';
+        if (jobsCountBadge) jobsCountBadge.textContent = 'Scanning verified live feeds...';
 
         try {
             let url = `/api/jobs?query=${encodeURIComponent(q)}&location=${encodeURIComponent(loc)}`;
@@ -537,8 +560,14 @@ Requirements & Qualifications:
             const data = await res.json();
             const jobs = data.jobs || [];
 
-            const filterLabel = maxH && maxH !== '0' ? ` (Posted ≤ ${maxH}h ago)` : '';
-            if (jobsCountBadge) jobsCountBadge.textContent = `${jobs.length} Positions${filterLabel}`;
+            const freshCount = jobs.filter(j => j.is_fresh_20h).length;
+            if (jobsCountBadge) {
+                if (maxH && maxH !== '0') {
+                    jobsCountBadge.textContent = `🔥 ${jobs.length} Positions (Posted ≤ ${maxH}h ago)`;
+                } else {
+                    jobsCountBadge.textContent = `🔥 ${freshCount} Fresh (≤ 20h) • ${jobs.length} Total Positions`;
+                }
+            }
             renderJobs(jobs);
         } catch (e) {
             console.error('Jobs fetch error:', e);
@@ -552,12 +581,33 @@ Requirements & Qualifications:
         });
     }
 
+    // Debounced search input
+    let searchDebounce = null;
+    if (radarSearchQuery) {
+        radarSearchQuery.addEventListener('input', () => {
+            clearTimeout(searchDebounce);
+            searchDebounce = setTimeout(loadJobs, 300);
+        });
+    }
+    if (radarSearchLocation) {
+        radarSearchLocation.addEventListener('input', () => {
+            clearTimeout(searchDebounce);
+            searchDebounce = setTimeout(loadJobs, 350);
+        });
+    }
+
     function renderJobs(jobs) {
         if (!jobsCardsList) return;
         jobsCardsList.innerHTML = '';
 
         if (jobs.length === 0) {
-            jobsCardsList.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted);">No matching internships found. Try clearing filters.</div>';
+            jobsCardsList.innerHTML = `
+                <div style="padding: 40px 20px; text-align: center; color: var(--text-tertiary); background: var(--apple-surface-card); border-radius: var(--radius-lg); border: 1px solid var(--apple-border);">
+                    <div style="font-size: 32px; margin-bottom: 8px;">🔍</div>
+                    <div style="font-size: 14px; font-weight: 500; color: var(--text-secondary);">No matching internships found</div>
+                    <div style="font-size: 12.5px; margin-top: 4px;">Try changing the time filter or clearing search keywords.</div>
+                </div>
+            `;
             return;
         }
 
@@ -569,40 +619,51 @@ Requirements & Qualifications:
 
             card.innerHTML = `
                 <div class="job-info-col">
-                    <h4>${job.company} — <span style="font-weight: 400; color: #cbd5e1;">${job.title}</span></h4>
+                    <div class="job-card-title-row">
+                        <a href="${job.apply_url}" target="_blank" rel="noopener noreferrer" class="job-title-link" title="Click to open direct application page">
+                            <span>${job.company}</span>
+                            <span style="color: var(--text-tertiary); font-weight: 300;">—</span>
+                            <span class="job-title-role">${job.title}</span>
+                            <span style="font-size: 13px; opacity: 0.65;">↗</span>
+                        </a>
+                    </div>
                     <div class="job-meta-row">
                         ${job.is_fresh_20h 
                             ? `<span class="badge-fresh">🔥 Posted ${job.posted_time_label || (job.posted_hours_ago + 'h ago')}</span>` 
                             : `<span class="badge-time">🕒 Posted ${job.posted_time_label || (job.posted_hours_ago + 'h ago')}</span>`}
                         <span>📍 ${job.location}</span>
                         <span>🗓️ ${job.term || 'Upcoming Term'}</span>
-                        <span class="badge-success">${job.match_score || 90}% Match</span>
-                        <span style="color: var(--text-dim);">via ${job.source}</span>
+                        <span class="badge-success">${job.match_score || 92}% Match</span>
+                        <span class="badge-neutral" style="font-size: 11px;">via ${job.source || 'Direct ATS'}</span>
                     </div>
                     <div class="job-tags-row">
                         ${tagsHtml}
                     </div>
                 </div>
                 <div class="job-action-col">
-                    <button class="btn-autofill btn-run-autofill" data-url="${job.apply_url}" data-company="${job.company}" data-title="${job.title}">
-                        ⚡ Auto-Apply (Bot)
+                    <a href="${job.apply_url}" target="_blank" rel="noopener noreferrer" class="btn-direct-link" title="Open direct application in new tab">
+                        <span>↗ Direct Apply</span>
+                    </a>
+                    <button class="btn-autofill btn-run-autofill" data-url="${job.apply_url}" data-company="${job.company}" data-title="${job.title}" title="Autofill form via Playwright bot">
+                        <span>⚡ Auto-Apply (Bot)</span>
                     </button>
-                    <button class="btn-secondary btn-import-job" data-company="${job.company}" data-title="${job.title}">
-                        📥 Tailor Resume
+                    <button class="btn-secondary btn-import-job" data-company="${job.company}" data-title="${job.title}" title="Tailor LaTeX resume for this position">
+                        <span>✨ Tailor Resume</span>
                     </button>
-                    <a href="${job.apply_url}" target="_blank" class="btn-ghost">↗ Portal</a>
                 </div>
             `;
 
             // Wire Auto-Apply button
             const btnRun = card.querySelector('.btn-run-autofill');
-            btnRun.addEventListener('click', async () => {
+            btnRun.addEventListener('click', async (e) => {
+                e.stopPropagation();
                 await triggerAutofill(job);
             });
 
             // Wire Tailor button
             const btnImport = card.querySelector('.btn-import-job');
-            btnImport.addEventListener('click', () => {
+            btnImport.addEventListener('click', (e) => {
+                e.stopPropagation();
                 companyInput.value = job.company;
                 roleInput.value = job.title;
                 jobDescInput.value = `Target Role: ${job.title}\nCompany: ${job.company}\nLocation: ${job.location}\nTerm: ${job.term}\nTags & Tech: ${(job.tags || []).join(', ')}\n\nApply URL: ${job.apply_url}\n\nPlease tailor my resume for this ${job.company} ${job.title} internship position.`;
@@ -610,12 +671,15 @@ Requirements & Qualifications:
                 // Switch to resume tab
                 tabBtns.forEach(b => b.classList.remove('active'));
                 tabContents.forEach(c => c.classList.remove('active'));
-                document.querySelector('[data-tab="tab-resume"]').classList.add('active');
-                document.getElementById('tab-resume').classList.add('active');
+                const resumeTabBtn = document.querySelector('[data-tab="tab-resume"]');
+                if (resumeTabBtn) resumeTabBtn.classList.add('active');
+                const resumeTabContent = document.getElementById('tab-resume');
+                if (resumeTabContent) resumeTabContent.classList.add('active');
 
                 // Trigger ATS Analysis
                 btnAnalyze.click();
-                showToast(`Imported ${job.company} into Tailor Panel!`);
+                showToast(`Imported ${job.company} into Tailoring Engine!`);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
 
             jobsCardsList.appendChild(card);
@@ -625,10 +689,10 @@ Requirements & Qualifications:
     async function triggerAutofill(job) {
         if (!botStatusBanner) return;
         botStatusBanner.classList.remove('hidden');
-        botConsoleTitle.textContent = `🤖 Browser Bot Active for ${job.company}`;
-        botConsoleMsg.textContent = `Launching Playwright browser engine... Navigating to ${job.apply_url}...`;
+        botConsoleTitle.textContent = `🤖 Playwright Bot Active for ${job.company}`;
+        botConsoleMsg.textContent = `Opening direct portal: ${job.apply_url}...`;
 
-        showToast(`Launching Playwright bot for ${job.company}... Watch your screen!`);
+        showToast(`Launching Playwright bot for ${job.company}... Watch your screen!`, '🚀');
 
         try {
             const res = await fetch('/api/autofill', {
@@ -649,10 +713,10 @@ Requirements & Qualifications:
             const data = await res.json();
             botConsoleTitle.textContent = `✅ ${job.company}: Form Autofilled!`;
             botConsoleMsg.textContent = data.message || `Filled ${data.fields_filled ? data.fields_filled.length : 0} fields. Resume attached. Review window is open for 45s.`;
-            showToast(`Auto-fill complete for ${job.company}! Review & submit.`);
+            showToast(`Auto-fill complete for ${job.company}! Review & submit.`, '✨');
         } catch (e) {
             botConsoleTitle.textContent = `⚠️ Bot Notice (${job.company})`;
-            botConsoleMsg.textContent = `Automation note: ${e.message}. You can still complete the portal directly.`;
+            botConsoleMsg.textContent = `Automation note: ${e.message}. You can still complete the portal directly via the 'Direct Apply' button.`;
         }
     }
 

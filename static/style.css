@@ -1,168 +1,422 @@
+/* ==========================================================================
+   AutoTailor AI — Apple Pro Design System (macOS Sequoia & iOS 18 Aesthetic)
+   ========================================================================== */
+
 :root {
-    --bg-main: #07090e;
-    --bg-panel: #0d121f;
-    --bg-card: #131b2e;
-    --bg-input: #090d16;
-    --border-color: rgba(255, 255, 255, 0.08);
-    --border-highlight: rgba(99, 102, 241, 0.3);
+    /* Apple Obsidian & Titanium Dark Palette */
+    --apple-bg: #000000;
+    --apple-bg-subtle: #09090b;
+    --apple-surface: rgba(22, 22, 24, 0.72);
+    --apple-surface-hover: rgba(32, 32, 36, 0.82);
+    --apple-surface-card: rgba(28, 28, 30, 0.65);
+    --apple-surface-elevated: rgba(38, 38, 42, 0.85);
     
-    --primary: #6366f1;
-    --primary-hover: #4f46e5;
-    --primary-glow: rgba(99, 102, 241, 0.25);
+    /* Apple Hairline Glass Borders & Inset Highlights */
+    --apple-border: rgba(255, 255, 255, 0.08);
+    --apple-border-light: rgba(255, 255, 255, 0.14);
+    --apple-border-glow: rgba(41, 151, 255, 0.4);
+    --apple-inner-highlight: inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+    --apple-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --apple-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
+    --apple-shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.65);
     
-    --accent: #8b5cf6;
-    --success: #10b981;
-    --success-bg: rgba(16, 185, 129, 0.15);
-    --warning: #f59e0b;
-    --warning-bg: rgba(245, 158, 11, 0.15);
-    --danger: #ef4444;
-    --danger-bg: rgba(239, 68, 68, 0.15);
+    /* Apple Dynamic Accent Colors */
+    --apple-blue: #0071e3;
+    --apple-blue-hover: #0077ed;
+    --apple-blue-glow: rgba(0, 113, 227, 0.35);
+    --apple-blue-subtle: rgba(0, 113, 227, 0.14);
     
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --text-dim: #64748b;
+    --apple-green: #30d158;
+    --apple-green-bg: rgba(48, 209, 88, 0.12);
+    --apple-green-border: rgba(48, 209, 88, 0.28);
     
-    --font-heading: 'Outfit', sans-serif;
-    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-code: 'JetBrains Mono', monospace;
+    --apple-orange: #ff9f0a;
+    --apple-orange-bg: rgba(255, 159, 10, 0.14);
+    --apple-orange-border: rgba(255, 159, 10, 0.32);
     
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 14px;
+    --apple-red: #ff453a;
+    --apple-red-bg: rgba(255, 69, 58, 0.14);
+    --apple-red-border: rgba(255, 69, 58, 0.3);
+
+    --apple-purple: #bf5af2;
+    --apple-purple-bg: rgba(191, 90, 242, 0.12);
+
+    /* Apple Text Hierarchy */
+    --text-primary: #f5f5f7;
+    --text-secondary: #a1a1a6;
+    --text-tertiary: #6e6e73;
+    --text-quaternary: #48484a;
+
+    /* Apple Typography */
+    --font-system: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Menlo", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    
+    /* Radius & Spacing */
+    --radius-pill: 9999px;
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 26px;
+
+    /* Apple Fluid Transition Curves */
+    --apple-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --apple-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-* {
+/* ==========================================================================
+   Base & Reset
+   ========================================================================== */
+
+*, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-    background-color: var(--bg-main);
-    color: var(--text-main);
-    font-family: var(--font-body);
+    background-color: var(--apple-bg);
+    color: var(--text-primary);
+    font-family: var(--font-system);
     font-size: 14px;
     line-height: 1.5;
+    letter-spacing: -0.012em;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
+    position: relative;
 }
 
-/* Header */
+/* Ambient Diffused Glows (Apple Keynote Style) */
+body::before {
+    content: '';
+    position: fixed;
+    top: -200px;
+    left: 20%;
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(0, 113, 227, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(80px);
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    bottom: -150px;
+    right: 15%;
+    width: 500px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(191, 90, 242, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(80px);
+}
+
+/* ==========================================================================
+   Header (Apple macOS Menu & Dynamic Bar)
+   ========================================================================== */
+
 .app-header {
-    background-color: var(--bg-panel);
-    border-bottom: 1px solid var(--border-color);
-    padding: 12px 24px;
+    background: rgba(18, 18, 20, 0.75);
+    backdrop-filter: blur(30px) saturate(190%);
+    -webkit-backdrop-filter: blur(30px) saturate(190%);
+    border-bottom: 1px solid var(--apple-border);
+    padding: 10px 28px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
 
 .header-left, .header-right {
     display: flex;
     align-items: center;
     gap: 16px;
+    position: relative;
+    z-index: 2;
 }
 
 .logo-box {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-family: var(--font-heading);
-    font-size: 18px;
-    font-weight: 700;
+    gap: 10px;
+    text-decoration: none;
+    cursor: default;
+}
+
+.logo-icon-wrap {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 100%);
+    border: 1px solid var(--apple-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--apple-inner-highlight), 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .logo-icon {
-    font-size: 20px;
+    font-size: 16px;
+    filter: drop-shadow(0 0 6px rgba(41, 151, 255, 0.8));
+}
+
+.logo-title {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: var(--text-primary);
 }
 
 .gradient-text {
-    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    background: linear-gradient(135deg, #2997ff 0%, #bf5af2 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    font-weight: 700;
+    margin-left: 2px;
 }
 
 .badge-status {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(16, 185, 129, 0.1);
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    padding: 4px 10px;
-    border-radius: 9999px;
+    background: rgba(48, 209, 88, 0.08);
+    border: 1px solid var(--apple-green-border);
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
     font-size: 12px;
-    color: #34d399;
+    font-weight: 500;
+    color: var(--apple-green);
+    letter-spacing: -0.01em;
 }
 
 .status-pulse {
-    width: 8px;
-    height: 8px;
-    background-color: #10b981;
+    width: 7px;
+    height: 7px;
+    background-color: var(--apple-green);
     border-radius: 50%;
-    box-shadow: 0 0 8px #10b981;
+    box-shadow: 0 0 8px var(--apple-green);
+    animation: applePulse 2.4s infinite ease-in-out;
+}
+
+@keyframes applePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
 }
 
 .master-badge {
-    font-size: 12px;
-    color: var(--text-muted);
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .master-badge code {
-    background: var(--bg-card);
-    padding: 2px 6px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 3px 8px;
     border-radius: var(--radius-sm);
-    color: #e2e8f0;
-    font-family: var(--font-code);
+    color: #e5e5ea;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
 }
 
-/* Dashboard Grid */
+/* ==========================================================================
+   Apple Button System
+   ========================================================================== */
+
+button, a.btn-link {
+    font-family: var(--font-system);
+    cursor: pointer;
+    border: none;
+    outline: none;
+    transition: all 0.22s var(--apple-ease);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    text-decoration: none;
+    user-select: none;
+}
+
+button:active, a.btn-link:active {
+    transform: scale(0.97);
+}
+
+/* Apple Cupertino Blue Primary */
+.btn-primary {
+    background: linear-gradient(180deg, #0077ed 0%, #0062cc 100%);
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 13.5px;
+    letter-spacing: -0.015em;
+    padding: 8px 18px;
+    border-radius: var(--radius-pill);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 3px 10px rgba(0, 113, 227, 0.4);
+    border: 1px solid rgba(0, 113, 227, 0.8);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(180deg, #1a88ff 0%, #006ee6 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 6px 16px rgba(0, 113, 227, 0.55);
+    transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+    opacity: 0.55;
+    pointer-events: none;
+    filter: grayscale(0.4);
+}
+
+/* Apple Frosted Glass Secondary */
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 13px;
+    padding: 7px 15px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--apple-border-light);
+    box-shadow: var(--apple-inner-highlight), var(--apple-shadow-sm);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.22);
+    transform: translateY(-1px);
+}
+
+/* Apple Ghost Button */
+.btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    font-weight: 400;
+    font-size: 12.5px;
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    border: 1px solid transparent;
+}
+
+.btn-ghost:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--apple-border);
+}
+
+/* Apple Accent Pill */
+.btn-accent {
+    background: linear-gradient(180deg, #bf5af2 0%, #9933cc 100%);
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 13px;
+    padding: 7px 16px;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(191, 90, 242, 0.8);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 3px 10px rgba(191, 90, 242, 0.35);
+}
+
+.btn-accent:hover {
+    background: linear-gradient(180deg, #c76ff4 0%, #aa3de0 100%);
+    box-shadow: 0 5px 14px rgba(191, 90, 242, 0.5);
+    transform: translateY(-1px);
+}
+
+/* Apple Emerald Pill (Verified / Download) */
+.btn-success {
+    background: linear-gradient(180deg, #30d158 0%, #24a143 100%);
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 13px;
+    padding: 7px 16px;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(48, 209, 88, 0.8);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 3px 10px rgba(48, 209, 88, 0.35);
+}
+
+.btn-success:hover {
+    background: linear-gradient(180deg, #3be265 0%, #27b34b 100%);
+    box-shadow: 0 5px 14px rgba(48, 209, 88, 0.5);
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   Dashboard Grid & Glass Panels
+   ========================================================================== */
+
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 480px 1fr;
-    gap: 20px;
-    padding: 20px;
+    grid-template-columns: 460px 1fr;
+    gap: 22px;
+    padding: 22px 28px;
     flex: 1;
-    max-width: 1750px;
+    max-width: 1780px;
     margin: 0 auto;
     width: 100%;
+    position: relative;
+    z-index: 1;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1140px) {
     .dashboard-grid {
         grid-template-columns: 1fr;
+        padding: 16px;
     }
 }
 
 .panel {
-    background-color: var(--bg-panel);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
+    background: var(--apple-surface);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--apple-border);
+    border-radius: var(--radius-xl);
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    box-shadow: var(--apple-inner-highlight), var(--apple-shadow-md);
+    transition: border-color 0.25s var(--apple-ease);
+}
+
+.panel:hover {
+    border-color: rgba(255, 255, 255, 0.12);
 }
 
 .panel-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border-color);
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--apple-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: rgba(255, 255, 255, 0.02);
 }
 
 .panel-header h2 {
-    font-family: var(--font-heading);
     font-size: 16px;
     font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
 }
 
-/* Form inputs & buttons */
+.header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* ==========================================================================
+   Left Panel: Job Input & Analysis
+   ========================================================================== */
+
 .job-input-group {
-    padding: 20px;
+    padding: 18px 22px 14px;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -171,186 +425,127 @@ body {
 .meta-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 12px;
 }
 
-input[type="text"], textarea {
-    background-color: var(--bg-input);
-    border: 1px solid var(--border-color);
+input[type="text"], textarea, select {
+    background: rgba(0, 0, 0, 0.42);
+    border: 1px solid var(--apple-border);
     border-radius: var(--radius-md);
-    color: var(--text-main);
+    color: var(--text-primary);
+    font-family: var(--font-system);
+    font-size: 13.5px;
     padding: 10px 14px;
-    font-family: var(--font-body);
-    font-size: 13px;
-    transition: all 0.2s ease;
-}
-
-input[type="text"]:focus, textarea:focus {
     outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px var(--primary-glow);
+    transition: all 0.2s var(--apple-ease);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-#job-description-input {
+input[type="text"]::placeholder, textarea::placeholder {
+    color: var(--text-tertiary);
+}
+
+input[type="text"]:focus, textarea:focus, select:focus {
+    border-color: var(--apple-blue);
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.25), inset 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+textarea#job-description-input {
     height: 190px;
     resize: vertical;
-    line-height: 1.6;
+    line-height: 1.55;
+    font-size: 13px;
 }
 
 .action-bar {
-    padding: 0 20px 20px;
+    padding: 0 22px 18px;
+    display: flex;
 }
 
-button {
-    font-family: var(--font-body);
-    font-weight: 500;
-    font-size: 13px;
-    padding: 9px 16px;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    border: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.15s ease;
-}
-
-.btn-primary {
-    background-color: var(--primary);
-    color: white;
+.action-bar .btn-primary {
     width: 100%;
+    padding: 11px;
+    font-size: 14px;
+    justify-content: center;
 }
 
-.btn-primary:hover {
-    background-color: var(--primary-hover);
-    box-shadow: 0 4px 14px var(--primary-glow);
-}
-
-.btn-secondary {
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
-    color: var(--text-main);
-}
-
-.btn-secondary:hover {
-    border-color: rgba(255, 255, 255, 0.2);
-    background-color: #1e293b;
-}
-
-.btn-ghost {
-    background: transparent;
-    color: var(--text-muted);
-}
-
-.btn-ghost:hover {
-    color: var(--text-main);
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.btn-accent {
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    color: white;
-}
-
-.btn-accent:hover {
-    filter: brightness(1.1);
-    box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
-}
-
-.btn-success {
-    background-color: var(--success);
-    color: #064e3b;
-    font-weight: 600;
-    text-decoration: none;
-    padding: 10px 18px;
-    border-radius: var(--radius-md);
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.btn-success:hover {
-    background-color: #34d399;
-}
-
-/* Analysis Box */
+/* Analysis Results Card */
 .analysis-box {
-    margin: 0 20px 20px;
+    margin: 0 22px 20px;
+    background: var(--apple-surface-card);
+    border: 1px solid var(--apple-border-light);
+    border-radius: var(--radius-lg);
     padding: 18px;
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
     display: flex;
     flex-direction: column;
     gap: 16px;
+    box-shadow: var(--apple-inner-highlight), var(--apple-shadow-sm);
+    animation: appleSlideUp 0.3s var(--apple-ease);
+}
+
+@keyframes appleSlideUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .score-card {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--apple-border);
 }
 
 .score-circle {
-    width: 72px;
-    height: 72px;
+    width: 68px;
+    height: 68px;
     border-radius: 50%;
-    background: conic-gradient(var(--success) 0% 75%, rgba(255, 255, 255, 0.1) 75% 100%);
+    background: radial-gradient(circle, rgba(48, 209, 88, 0.2) 0%, rgba(48, 209, 88, 0.04) 75%);
+    border: 2px solid var(--apple-green);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: relative;
-    border: 3px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 16px rgba(48, 209, 88, 0.3), inset 0 0 8px rgba(48, 209, 88, 0.15);
+    flex-shrink: 0;
 }
 
-.score-circle::after {
-    content: '';
-    position: absolute;
-    width: 58px;
-    height: 58px;
-    background-color: var(--bg-card);
-    border-radius: 50%;
-    z-index: 1;
+.score-circle span#match-score-num {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--apple-green);
+    line-height: 1;
+    letter-spacing: -0.03em;
 }
 
-#match-score-num {
-    position: relative;
-    z-index: 2;
-    font-family: var(--font-heading);
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--success);
-}
-
-.score-label {
-    position: relative;
-    z-index: 2;
-    font-size: 8px;
+.score-circle .score-label {
+    font-size: 8.5px;
     font-weight: 600;
-    color: var(--text-dim);
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    margin-top: 2px;
 }
 
 .score-meta h3 {
-    font-family: var(--font-heading);
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
-    margin-bottom: 4px;
+    color: var(--text-primary);
+    letter-spacing: -0.015em;
+    margin-bottom: 3px;
 }
 
 .score-meta p {
-    color: var(--text-muted);
-    font-size: 13px;
+    font-size: 12.5px;
+    color: var(--text-secondary);
 }
 
-.keyword-section h4, .insights-box h4 {
-    font-size: 12px;
+.keyword-section h4 {
+    font-size: 12.5px;
     font-weight: 600;
-    text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     margin-bottom: 8px;
-    letter-spacing: 0.5px;
+    letter-spacing: -0.01em;
 }
 
 .tag-cloud {
@@ -360,100 +555,145 @@ button {
 }
 
 .tag-cloud span {
-    padding: 3px 8px;
-    border-radius: var(--radius-sm);
-    font-size: 12px;
-    background: rgba(16, 185, 129, 0.15);
-    color: #6ee7b7;
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    background: var(--apple-green-bg);
+    border: 1px solid var(--apple-green-border);
+    color: var(--apple-green);
+    padding: 3px 9px;
+    border-radius: var(--radius-pill);
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
 }
 
 .tag-cloud.missing span {
-    background: rgba(239, 68, 68, 0.15);
-    color: #fca5a5;
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: var(--apple-orange-bg);
+    border-color: var(--apple-orange-border);
+    color: var(--apple-orange);
 }
 
-.insights-box ul {
-    list-style-type: none;
+.insights-box {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--apple-border);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+}
+
+.insights-box h4 {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #e5e5ea;
     margin-bottom: 8px;
 }
 
-.insights-box li {
-    position: relative;
-    padding-left: 16px;
-    margin-bottom: 4px;
-    font-size: 13px;
-    color: #cbd5e1;
+.insights-box ul {
+    list-style: none;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
-.insights-box li::before {
-    content: "•";
-    color: var(--primary);
+.insights-box ul li {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    position: relative;
+    padding-left: 14px;
+    line-height: 1.45;
+}
+
+.insights-box ul li::before {
+    content: '•';
     position: absolute;
-    left: 0;
-    font-weight: bold;
+    left: 4px;
+    color: var(--apple-blue);
 }
 
 .insights-quote {
     font-size: 12px;
-    color: var(--text-muted);
     font-style: italic;
-    border-left: 2px solid var(--primary);
-    padding-left: 10px;
-    margin-top: 8px;
+    color: var(--text-tertiary);
+    border-top: 1px solid var(--apple-border);
+    padding-top: 8px;
+    line-height: 1.4;
 }
 
-/* Tabs */
+/* ==========================================================================
+   Apple Segmented Control Pill Navigation
+   ========================================================================== */
+
 .tab-nav {
     display: flex;
-    background-color: var(--bg-panel);
-    border-bottom: 1px solid var(--border-color);
-    padding: 0 10px;
+    background: rgba(0, 0, 0, 0.45);
+    border-radius: var(--radius-pill);
+    padding: 4px;
+    margin: 16px 22px 10px;
+    border: 1px solid var(--apple-border);
+    gap: 4px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 .tab-btn {
+    flex: 1;
     background: transparent;
-    border: none;
-    color: var(--text-muted);
-    padding: 14px 20px;
+    color: var(--text-secondary);
     font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    border-radius: 0;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: var(--radius-pill);
+    border: none;
+    transition: all 0.24s var(--apple-ease);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    letter-spacing: -0.01em;
 }
 
 .tab-btn:hover {
-    color: var(--text-main);
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .tab-btn.active {
-    color: var(--primary);
-    border-bottom-color: var(--primary);
+    background: rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #ffffff;
+    box-shadow: var(--apple-inner-highlight), 0 3px 12px rgba(0, 0, 0, 0.35);
+    font-weight: 600;
 }
 
 .tab-content {
     display: none;
-    padding: 20px;
-    flex: 1;
+    padding: 14px 22px 22px;
     flex-direction: column;
     gap: 16px;
+    flex: 1;
 }
 
 .tab-content.active {
     display: flex;
+    animation: appleFadeIn 0.25s var(--apple-ease);
 }
 
-/* Tab 1: Project Bank */
+@keyframes appleFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   Tab 1: Resume Tailoring & Project Bank
+   ========================================================================== */
+
 .project-bank-container {
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    padding: 12px 16px;
+    background: var(--apple-surface-card);
+    border: 1px solid var(--apple-border);
+    border-radius: var(--radius-lg);
+    padding: 14px 16px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
+    box-shadow: var(--apple-inner-highlight);
 }
 
 .project-bank-header {
@@ -463,16 +703,14 @@ button {
 }
 
 .bank-title {
-    font-size: 12px;
+    font-size: 12.5px;
     font-weight: 600;
-    color: #e2e8f0;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    color: var(--text-primary);
 }
 
 .bank-sub {
-    font-size: 11px;
-    color: var(--text-dim);
+    font-size: 11.5px;
+    color: var(--text-tertiary);
 }
 
 .project-pills-row {
@@ -482,52 +720,49 @@ button {
 }
 
 .project-pill {
-    background: var(--bg-input);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--apple-border);
+    border-radius: var(--radius-pill);
+    padding: 6px 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     font-size: 12px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.2s ease;
+    transition: all 0.22s var(--apple-ease);
     user-select: none;
 }
 
 .project-pill:hover {
-    border-color: rgba(99, 102, 241, 0.5);
-    background: rgba(99, 102, 241, 0.08);
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(255, 255, 255, 0.16);
+    transform: translateY(-1px);
 }
 
 .project-pill.active {
-    border-color: var(--primary);
-    background: rgba(99, 102, 241, 0.15);
-    color: #f8fafc;
-    box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+    background: rgba(0, 113, 227, 0.18);
+    border-color: rgba(0, 113, 227, 0.7);
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(0, 113, 227, 0.25);
 }
 
 .project-pill.recommended {
-    border-color: #f59e0b;
-    background: rgba(245, 158, 11, 0.12);
+    border-color: rgba(255, 159, 10, 0.6);
 }
 
 .project-pill-badge {
-    font-size: 9px;
-    font-weight: 700;
-    text-transform: uppercase;
     background: rgba(255, 255, 255, 0.1);
-    padding: 1px 5px;
-    border-radius: 4px;
-    color: var(--text-muted);
+    font-size: 10.5px;
+    padding: 1px 7px;
+    border-radius: var(--radius-pill);
+    color: var(--text-secondary);
 }
 
-.project-pill.recommended .project-pill-badge {
-    background: #f59e0b;
-    color: #0f172a;
+.project-pill.active .project-pill-badge {
+    background: rgba(0, 113, 227, 0.4);
+    color: #e5f1ff;
 }
 
-/* Tab 1: Tailor & LaTeX */
 .tailor-controls {
     display: flex;
     gap: 10px;
@@ -537,106 +772,130 @@ button {
     flex: 1;
 }
 
-.tailor-controls button {
-    width: auto;
-    white-space: nowrap;
-}
-
 .summary-banner {
-    background: rgba(99, 102, 241, 0.1);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: rgba(48, 209, 88, 0.07);
+    border: 1px solid var(--apple-green-border);
     border-radius: var(--radius-md);
-    padding: 14px 18px;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .summary-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
-}
-
-.tailor-meta-badges {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.badge-accent {
-    background: rgba(139, 92, 246, 0.2);
-    border: 1px solid rgba(139, 92, 246, 0.4);
-    color: #c4b5fd;
-    padding: 2px 8px;
-    border-radius: var(--radius-sm);
-    font-size: 11px;
 }
 
 .badge-success {
-    color: #34d399;
-    font-size: 13px;
+    background: var(--apple-green-bg);
+    border: 1px solid var(--apple-green-border);
+    color: var(--apple-green);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+}
+
+.badge-accent {
+    background: var(--apple-purple-bg);
+    border: 1px solid rgba(191, 90, 242, 0.3);
+    color: var(--apple-purple);
+    font-size: 11.5px;
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
 }
 
 .badge-neutral {
     background: rgba(255, 255, 255, 0.08);
-    padding: 2px 8px;
-    border-radius: var(--radius-sm);
-    font-size: 12px;
+    border: 1px solid var(--apple-border);
+    color: var(--text-secondary);
+    font-size: 11.5px;
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
 }
 
 .summary-banner ul {
-    list-style-type: none;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
-.summary-banner li {
-    font-size: 12px;
-    color: #cbd5e1;
-    margin-bottom: 3px;
-    padding-left: 14px;
-    position: relative;
+.summary-banner ul li {
+    font-size: 12.5px;
+    color: #e2e8f0;
+    line-height: 1.45;
 }
 
-.summary-banner li::before {
-    content: "✓";
-    color: #34d399;
-    position: absolute;
-    left: 0;
-}
-
-/* Workspace Split: Editor & PDF Live Preview */
+/* Workspace Split & Code Editor */
 .workspace-split {
     display: flex;
     gap: 16px;
+    min-height: 380px;
     flex: 1;
-    min-height: 480px;
 }
 
 .code-wrapper {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    flex: 1;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
+    background: #0d0d0f;
+    border: 1px solid var(--apple-border);
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    min-width: 320px;
+    box-shadow: var(--apple-shadow-sm);
 }
 
+.editor-header {
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid var(--apple-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+}
+
+.editor-actions {
+    display: flex;
+    gap: 8px;
+}
+
+textarea#latex-editor {
+    flex: 1;
+    min-height: 320px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 16px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: #f1f5f9;
+    box-shadow: none;
+    white-space: pre;
+    tab-size: 2;
+}
+
+/* PDF Preview Pane */
 .pdf-preview-box {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    flex: 1;
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    border-radius: var(--radius-md);
-    background-color: var(--bg-card);
+    background: #0d0d0f;
+    border: 1px solid var(--apple-border);
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    min-width: 320px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    transition: all 0.3s ease;
+    box-shadow: var(--apple-shadow-md);
 }
 
 .pdf-header {
-    background-color: #0b101b;
-    padding: 8px 14px;
-    border-bottom: 1px solid var(--border-color);
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid var(--apple-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -646,17 +905,16 @@ button {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 12px;
-    color: #34d399;
-    font-weight: 600;
+    font-size: 12.5px;
+    font-weight: 500;
 }
 
 .pdf-indicator-dot {
     width: 7px;
     height: 7px;
-    background-color: #10b981;
+    background: var(--apple-green);
     border-radius: 50%;
-    box-shadow: 0 0 6px #10b981;
+    box-shadow: 0 0 6px var(--apple-green);
 }
 
 .pdf-header-actions {
@@ -664,53 +922,24 @@ button {
     gap: 6px;
 }
 
-#pdf-preview-frame {
-    width: 100%;
-    height: 100%;
-    min-height: 440px;
-    border: none;
-    background: #1e293b;
-}
-
-.editor-header {
-    background-color: var(--bg-card);
-    padding: 8px 14px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 12px;
-    color: var(--text-muted);
-}
-
-.editor-actions {
-    display: flex;
-    gap: 8px;
-}
-
-#latex-editor {
-    width: 100%;
-    min-height: 480px;
+iframe#pdf-preview-frame {
     flex: 1;
-    font-family: var(--font-code);
-    font-size: 12px;
-    line-height: 1.6;
-    background-color: #05070b;
+    width: 100%;
+    min-height: 320px;
     border: none;
-    border-radius: 0;
-    padding: 16px;
-    color: #e2e8f0;
+    background: #ffffff;
 }
 
 /* Compile Result Card */
 .compile-card {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%);
-    border: 1px solid rgba(16, 185, 129, 0.4);
-    border-radius: var(--radius-md);
-    padding: 16px 20px;
+    background: var(--apple-surface-card);
+    border: 1px solid var(--apple-border-light);
+    border-radius: var(--radius-lg);
+    padding: 14px 18px;
     display: flex;
     align-items: center;
     gap: 16px;
+    box-shadow: var(--apple-inner-highlight), var(--apple-shadow-sm);
 }
 
 .compile-icon {
@@ -722,52 +951,93 @@ button {
 }
 
 .compile-details h4 {
-    font-family: var(--font-heading);
-    font-size: 15px;
-    color: #f8fafc;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
 .compile-details p {
     font-size: 12px;
-    color: #34d399;
+    color: var(--apple-green);
 }
 
-/* Tab 2 & 3 textareas */
+.compile-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* ==========================================================================
+   Tabs 2 & 3: Cover Letter & Q&A
+   ========================================================================== */
+
+.tab-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 4px;
+}
+
+.tab-header-row h3 {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+}
+
+.tab-header-row p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 3px;
+    max-width: 650px;
+}
+
 .textarea-card {
     display: flex;
     flex-direction: column;
-    flex: 1;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
+    background: var(--apple-surface-card);
+    border: 1px solid var(--apple-border);
+    border-radius: var(--radius-lg);
     overflow: hidden;
+    box-shadow: var(--apple-inner-highlight), var(--apple-shadow-sm);
 }
 
 .card-toolbar {
-    background-color: var(--bg-card);
-    padding: 8px 16px;
-    border-bottom: 1px solid var(--border-color);
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid var(--apple-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 12px;
-    color: var(--text-muted);
+    font-size: 12.5px;
+    color: var(--text-secondary);
 }
 
-#cover-letter-output, #qa-output {
-    min-height: 400px;
-    flex: 1;
+textarea#cover-letter-output, textarea#qa-output {
+    min-height: 380px;
     border: none;
     border-radius: 0;
-    padding: 16px;
-    font-size: 13px;
-    line-height: 1.7;
-    background-color: #05070b;
+    padding: 18px;
+    line-height: 1.6;
+    font-size: 13.5px;
+    background: transparent;
+    box-shadow: none;
 }
 
 .qa-input-box {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    background: var(--apple-surface-card);
+    border: 1px solid var(--apple-border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+}
+
+.qa-input-box label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
 }
 
 .input-btn-row {
@@ -779,181 +1049,117 @@ button {
     flex: 1;
 }
 
-.input-btn-row button {
-    width: auto;
-    white-space: nowrap;
-}
+/* ==========================================================================
+   Tab 4: Autonomous Internship Radar & Job Cards
+   ========================================================================== */
 
-/* Modal */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999;
-}
-
-.modal-box {
-    background-color: var(--bg-panel);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    width: 90%;
-    max-width: 900px;
-    max-height: 85vh;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-}
-
-.modal-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.btn-close {
-    background: transparent;
-    font-size: 20px;
-    color: var(--text-muted);
-    border: none;
-    cursor: pointer;
-}
-
-.modal-body {
-    padding: 20px;
-    flex: 1;
-    overflow-y: auto;
-}
-
-#master-tex-viewer {
-    width: 100%;
-    height: 480px;
-    background-color: #05070b;
-    font-family: var(--font-code);
-    font-size: 12px;
-}
-
-.modal-footer {
-    padding: 14px 20px;
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-}
-
-/* Toast */
-.toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: var(--bg-card);
-    border: 1px solid var(--primary);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-    padding: 12px 20px;
-    border-radius: var(--radius-md);
-    font-size: 13px;
-    z-index: 1000;
-    animation: slideUp 0.3s ease;
-}
-
-@keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* Tab 4: Auto-Applier & Radar */
 .radar-search-bar {
     display: grid;
-    grid-template-columns: 1fr 180px 200px;
+    grid-template-columns: 1.5fr 1fr 1.3fr auto;
     gap: 10px;
+    background: var(--apple-surface-card);
+    border: 1px solid var(--apple-border);
+    border-radius: var(--radius-lg);
+    padding: 12px 14px;
+    box-shadow: var(--apple-inner-highlight);
+}
+
+@media (max-width: 900px) {
+    .radar-search-bar {
+        grid-template-columns: 1fr;
+    }
+}
+
+.time-filter-select {
+    cursor: pointer;
+    font-weight: 500;
 }
 
 .profile-snapshot-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid var(--apple-border-light);
+    border-radius: var(--radius-lg);
     padding: 14px 18px;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    box-shadow: var(--apple-inner-highlight);
 }
 
 .snapshot-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
 .snapshot-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 8px;
-    font-size: 12px;
-    color: #cbd5e1;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px 16px;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 900px) {
+    .snapshot-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .snapshot-grid strong {
-    color: var(--text-dim);
+    color: var(--text-primary);
+    font-weight: 500;
 }
 
 .snapshot-grid code {
-    background: #090d16;
+    background: rgba(255, 255, 255, 0.08);
     padding: 2px 6px;
-    border-radius: 4px;
-    color: #34d399;
-    font-family: var(--font-code);
+    border-radius: var(--radius-sm);
+    color: #e2e8f0;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
 }
 
+/* Bot Console Banner */
 .bot-console {
-    background: rgba(16, 185, 129, 0.1);
-    border: 1px solid rgba(16, 185, 129, 0.4);
-    border-radius: var(--radius-md);
-    padding: 12px 18px;
+    background: rgba(0, 113, 227, 0.09);
+    border: 1px solid var(--apple-border-glow);
+    border-radius: var(--radius-lg);
+    padding: 14px 18px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
+    box-shadow: 0 4px 20px rgba(0, 113, 227, 0.25);
+    animation: appleSlideUp 0.25s var(--apple-ease);
 }
 
 .bot-console-header {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    font-size: 13.5px;
     font-weight: 600;
-    color: #34d399;
-    font-size: 13px;
+    color: var(--text-primary);
 }
 
 .pulse-indicator {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background-color: #10b981;
-    box-shadow: 0 0 10px #10b981;
-    animation: pulse 1.5s infinite;
+    background: var(--apple-blue);
+    box-shadow: 0 0 10px var(--apple-blue);
+    animation: applePulse 1.8s infinite ease-in-out;
 }
 
-@keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.85); }
+p#bot-console-msg {
+    font-size: 12.5px;
+    color: #93c5fd;
+    font-family: var(--font-mono);
 }
 
+/* Jobs Table Container & Card List */
 .jobs-table-container {
     display: flex;
     flex-direction: column;
@@ -964,131 +1170,353 @@ button {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-family: var(--font-heading);
-    font-size: 14px;
+    font-size: 14.5px;
     font-weight: 600;
+    letter-spacing: -0.015em;
+    padding: 2px 4px;
 }
 
 .jobs-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    max-height: 480px;
-    overflow-y: auto;
-    padding-right: 4px;
+    gap: 12px;
 }
 
+/* ==========================================================================
+   Apple-Grade Job Card (The Star of the UI)
+   ========================================================================== */
+
 .job-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    padding: 14px 18px;
-    display: flex;
-    justify-content: space-between;
+    background: var(--apple-surface-card);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--apple-border);
+    border-radius: var(--radius-lg);
+    padding: 18px 22px;
+    display: grid;
+    grid-template-columns: 1fr auto;
     align-items: center;
-    gap: 16px;
-    transition: all 0.2s ease;
+    gap: 20px;
+    box-shadow: var(--apple-inner-highlight), var(--apple-shadow-sm);
+    transition: all 0.24s var(--apple-ease);
+    position: relative;
+    overflow: hidden;
 }
 
 .job-card:hover {
-    border-color: rgba(99, 102, 241, 0.4);
-    background-color: #151d33;
+    background: var(--apple-surface-hover);
+    border-color: rgba(255, 255, 255, 0.16);
+    transform: translateY(-2px);
+    box-shadow: var(--apple-inner-highlight), 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-.job-info-col h4 {
-    font-family: var(--font-heading);
-    font-size: 15px;
+.job-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: transparent;
+    transition: background-color 0.2s var(--apple-ease);
+}
+
+.job-card:hover::before {
+    background: var(--apple-blue);
+}
+
+.job-info-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.job-card-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.job-title-link {
+    font-size: 16px;
     font-weight: 600;
-    color: #f8fafc;
-    margin-bottom: 4px;
+    color: var(--text-primary);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.18s var(--apple-ease);
+}
+
+.job-title-link:hover {
+    color: var(--apple-blue);
+}
+
+.job-title-role {
+    font-weight: 400;
+    color: #e2e8f0;
 }
 
 .job-meta-row {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 10px;
     font-size: 12px;
-    color: var(--text-muted);
+    color: var(--text-secondary);
+}
+
+.badge-fresh {
+    background: var(--apple-orange-bg);
+    border: 1px solid var(--apple-orange-border);
+    color: var(--apple-orange);
+    padding: 3px 9px;
+    border-radius: var(--radius-pill);
+    font-size: 11.5px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.badge-time {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--apple-border);
+    color: var(--text-secondary);
+    padding: 3px 9px;
+    border-radius: var(--radius-pill);
+    font-size: 11.5px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .job-tags-row {
     display: flex;
+    flex-wrap: wrap;
     gap: 6px;
-    margin-top: 6px;
+    margin-top: 2px;
 }
 
 .job-tag {
-    font-size: 10px;
-    background: rgba(255, 255, 255, 0.06);
-    padding: 2px 6px;
-    border-radius: 4px;
-    color: #94a3b8;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #cbd5e1;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
 }
 
+/* Action Column in Job Card */
 .job-action-col {
     display: flex;
     align-items: center;
     gap: 8px;
-    white-space: nowrap;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+@media (max-width: 900px) {
+    .job-card {
+        grid-template-columns: 1fr;
+    }
+    .job-action-col {
+        justify-content: flex-start;
+        margin-top: 6px;
+    }
+}
+
+/* Apple Direct Portal Link Button */
+.btn-direct-link {
+    background: rgba(0, 113, 227, 0.14);
+    border: 1px solid rgba(0, 113, 227, 0.45);
+    color: #38bdf8;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 7px 15px;
+    border-radius: var(--radius-pill);
+    box-shadow: 0 2px 8px rgba(0, 113, 227, 0.15);
+    transition: all 0.22s var(--apple-ease);
+}
+
+.btn-direct-link:hover {
+    background: var(--apple-blue);
+    color: #ffffff;
+    border-color: var(--apple-blue);
+    box-shadow: 0 4px 14px rgba(0, 113, 227, 0.45);
+    transform: translateY(-1px);
 }
 
 .btn-autofill {
-    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-    color: #022c22;
-    font-weight: 700;
-    padding: 8px 14px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 100%);
+    border: 1px solid var(--apple-border-light);
+    color: var(--text-primary);
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: var(--radius-pill);
+    box-shadow: var(--apple-inner-highlight);
 }
 
 .btn-autofill:hover {
-    filter: brightness(1.15);
-    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
 }
 
-/* Posting Time Badges & Filter */
-.time-filter-select {
-    background: #0b0f19;
-    border: 1px solid rgba(245, 158, 11, 0.4);
-    color: #fde68a;
-    font-size: 13px;
-    font-weight: 600;
-    padding: 8px 12px;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    outline: none;
-    transition: all 0.2s;
-}
+/* ==========================================================================
+   Master Resume Modal (Apple Sheet Style)
+   ========================================================================== */
 
-.time-filter-select:hover, .time-filter-select:focus {
-    border-color: #f59e0b;
-    box-shadow: 0 0 10px rgba(245, 158, 11, 0.25);
-}
-
-.badge-fresh {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%);
-    border: 1px solid rgba(245, 158, 11, 0.5);
-    color: #fbbf24;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    display: inline-flex;
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
     align-items: center;
-    gap: 4px;
-    letter-spacing: 0.3px;
-    animation: glow-pulse 2s infinite ease-in-out;
+    justify-content: center;
+    z-index: 2000;
+    padding: 24px;
+    animation: appleFadeIn 0.22s var(--apple-ease);
 }
 
-@keyframes glow-pulse {
-    0%, 100% { box-shadow: 0 0 4px rgba(245, 158, 11, 0.3); }
-    50% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.6); }
+.modal-box {
+    background: var(--apple-surface-elevated);
+    border: 1px solid var(--apple-border-light);
+    border-radius: var(--radius-xl);
+    width: 100%;
+    max-width: 900px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: var(--apple-inner-highlight), 0 25px 60px rgba(0, 0, 0, 0.8);
+    animation: appleSlideUp 0.28s var(--apple-ease);
 }
 
-.badge-time {
-    background: rgba(148, 163, 184, 0.1);
-    border: 1px solid rgba(148, 163, 184, 0.25);
-    color: #cbd5e1;
+.modal-header {
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--apple-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    font-size: 15.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.btn-close {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--apple-border);
+    color: var(--text-secondary);
+    font-size: 16px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.18s var(--apple-ease);
+}
+
+.btn-close:hover {
+    background: rgba(255, 255, 255, 0.16);
+    color: #ffffff;
+}
+
+.modal-body {
+    padding: 18px 22px;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+}
+
+textarea#master-tex-viewer {
+    width: 100%;
+    height: 480px;
+    background: #09090b;
+    border: 1px solid var(--apple-border);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: #f1f5f9;
+}
+
+.modal-footer {
+    padding: 14px 22px;
+    border-top: 1px solid var(--apple-border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* ==========================================================================
+   Apple Dynamic Island Toast Notification
+   ========================================================================== */
+
+.toast {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(28, 28, 30, 0.88);
+    backdrop-filter: blur(28px) saturate(190%);
+    -webkit-backdrop-filter: blur(28px) saturate(190%);
+    border: 1px solid var(--apple-border-light);
+    color: #ffffff;
+    padding: 10px 22px;
+    border-radius: var(--radius-pill);
+    font-size: 13.5px;
     font-weight: 500;
-    padding: 2px 7px;
-    border-radius: 4px;
-    font-size: 11px;
+    letter-spacing: -0.015em;
+    z-index: 3000;
+    box-shadow: var(--apple-inner-highlight), 0 14px 36px rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: appleToastDrop 0.32s var(--apple-ease-bounce);
+    pointer-events: none;
+}
+
+@keyframes appleToastDrop {
+    from { opacity: 0; transform: translate(-50%, -18px) scale(0.92); }
+    to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: var(--radius-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.28);
 }
