@@ -1,21 +1,23 @@
 {
   "manifest_version": 3,
-  "name": "AutoTailor AI — 1-Click Internship Autofill",
-  "version": "1.0.0",
-  "description": "Apple-grade autonomous ATS autofill assistant for Shamir Khan. Works on Greenhouse, Lever, Workday, Ashby, and SmartRecruiters.",
+  "name": "AutoTailor AI — Autonomous ATS Autofill & Career Agent",
+  "version": "1.2.0",
+  "description": "Apple-grade autonomous ATS autofill assistant for Shamir Khan (Laurier CS). Automatically fills Workday, IBM, Greenhouse, Lever, Ashby, SmartRecruiters, Taleo, and all tech application portals.",
   "permissions": [
     "activeTab",
     "storage",
-    "scripting"
+    "scripting",
+    "clipboardWrite"
   ],
   "host_permissions": [
     "http://127.0.0.1:8500/*",
     "http://localhost:8500/*",
-    "https://*/*"
+    "https://*/*",
+    "http://*/*"
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "AutoTailor AI",
+    "default_title": "AutoTailor AI Assistant",
     "default_icon": {
       "16": "icon16.png",
       "48": "icon48.png",
@@ -30,15 +32,8 @@
   "content_scripts": [
     {
       "matches": [
-        "https://*.greenhouse.io/*",
-        "https://job-boards.greenhouse.io/*",
-        "https://boards.greenhouse.io/*",
-        "https://jobs.lever.co/*",
-        "https://*.myworkdayjobs.com/*",
-        "https://jobs.ashbyhq.com/*",
-        "https://jobs.smartrecruiters.com/*",
-        "https://*.icims.com/*",
-        "https://*.eightfold.ai/*"
+        "https://*/*",
+        "http://*/*"
       ],
       "js": ["content.js"],
       "css": ["floating.css"],

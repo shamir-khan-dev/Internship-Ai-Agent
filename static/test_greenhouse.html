@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application for Software Engineer, Intern (Summer 2027) - TOR at DoorDash Canada</title>
+    <link rel="stylesheet" href="/extension/floating.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #fdfdfd;
+            color: #222;
+            margin: 0;
+            padding: 40px 80px 100px 80px;
+            max-width: 780px;
+        }
+        h1 {
+            font-size: 26px;
+            color: #111;
+            margin-bottom: 6px;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+        }
+        .form-section {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            margin-bottom: 24px;
+        }
+        .form-section h2 {
+            font-size: 18px;
+            margin-top: 0;
+            margin-bottom: 18px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #374151;
+        }
+        .required::after {
+            content: " *";
+            color: #e11d48;
+        }
+        input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border 0.15s ease, box-shadow 0.15s ease;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 6px;
+        }
+        .radio-label {
+            font-size: 13.5px;
+            font-weight: normal;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .btn-submit {
+            background: #00d084;
+            color: #fff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Software Engineer, Intern (Summer 2027) - TOR</h1>
+    <div class="subtitle">DoorDash Canada &bull; Toronto, Ontario, Canada &bull; Engineering</div>
+
+    <form id="application-form">
+        <!-- Personal Information Section -->
+        <div class="form-section">
+            <h2>Personal Information</h2>
+            
+            <div class="form-group">
+                <label class="required" for="first_name">First Name</label>
+                <input type="text" id="first_name" name="first_name" autocomplete="given-name" />
+            </div>
+
+            <div class="form-group">
+                <label class="required" for="last_name">Last Name</label>
+                <input type="text" id="last_name" name="last_name" autocomplete="family-name" />
+            </div>
+
+            <div class="form-group">
+                <label class="required" for="email">Email</label>
+                <input type="email" id="email" name="email" autocomplete="email" />
+            </div>
+
+            <div class="form-group">
+                <label class="required" for="phone">Phone</label>
+                <input type="tel" id="phone" name="phone" autocomplete="tel" />
+            </div>
+
+            <div class="form-group">
+                <label for="linkedin">LinkedIn Profile</label>
+                <input type="text" id="linkedin" name="job_application[answers_attributes][0][text_value]" placeholder="https://linkedin.com/in/..." aria-label="LinkedIn Profile" />
+            </div>
+
+            <div class="form-group">
+                <label for="github">GitHub Profile</label>
+                <input type="text" id="github" name="job_application[answers_attributes][1][text_value]" placeholder="https://github.com/..." aria-label="GitHub Profile" />
+            </div>
+
+            <div class="form-group">
+                <label for="portfolio">Website / Portfolio</label>
+                <input type="text" id="portfolio" name="website" placeholder="https://..." />
+            </div>
+        </div>
+
+        <!-- Education Section -->
+        <div class="form-section">
+            <h2>Education</h2>
+
+            <div class="form-group">
+                <label class="required" for="school">School / University</label>
+                <input type="text" id="school" name="school" placeholder="Type school name..." />
+            </div>
+
+            <div class="form-group">
+                <label class="required" for="degree">Degree</label>
+                <input type="text" id="degree" name="degree" placeholder="e.g. Bachelor of Science" />
+            </div>
+
+            <div class="form-group">
+                <label class="required" for="major">Discipline / Major</label>
+                <input type="text" id="major" name="discipline" placeholder="e.g. Computer Science" />
+            </div>
+
+            <div class="form-group">
+                <label for="gpa">GPA</label>
+                <input type="text" id="gpa" name="gpa" placeholder="3.8" />
+            </div>
+        </div>
+
+        <!-- Work Authorization & Voluntary Disclosures -->
+        <div class="form-section">
+            <h2>Work Authorization</h2>
+
+            <div class="form-group">
+                <label class="required">Are you legally authorized to work in Canada?</label>
+                <div class="radio-group">
+                    <label class="radio-label"><input type="radio" name="work_auth" value="yes" id="work_auth_yes"> Yes</label>
+                    <label class="radio-label"><input type="radio" name="work_auth" value="no" id="work_auth_no"> No</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="required">Will you now or in the future require visa sponsorship for employment?</label>
+                <div class="radio-group">
+                    <label class="radio-label"><input type="radio" name="sponsorship" value="yes" id="sponsorship_yes"> Yes</label>
+                    <label class="radio-label"><input type="radio" name="sponsorship" value="no" id="sponsorship_no"> No</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="required">Are you 18 years of age or older?</label>
+                <div class="radio-group">
+                    <label class="radio-label"><input type="radio" name="over18" value="yes" id="over18_yes"> Yes</label>
+                    <label class="radio-label"><input type="radio" name="over18" value="no" id="over18_no"> No</label>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Submit Application</button>
+    </form>
+
+    <!-- Injected Extension Script for In-Page Experience -->
+    <script src="/extension/content.js"></script>
+</body>
+</html>

@@ -1,43 +1,45 @@
-# AutoTailor AI — Chrome & Edge Extension (JobRight.ai Style)
+# AutoTailor AI — Chrome & Edge Extension (JobRight & Simplify Style)
 
-A Manifest V3 browser extension for **Shamir Khan** that provides 1-click in-page application autofill on all major ATS platforms (**Greenhouse, Lever, Workday, Ashby, SmartRecruiters, iCIMS, Eightfold**).
-
----
-
-## Why an Extension (JobRight.ai / Simplify Style)?
-
-1. **Zero Bot Detection / CAPTCHA**: Runs directly inside your regular everyday Chrome or Edge browser. Cloudflare, Turnstile, and PerimeterX recognize your normal user session.
-2. **Logged-In Session Compatibility**: You stay logged in to your existing Workday, Greenhouse, or candidate portal accounts.
-3. **In-Page Floating Widget**: Injects an Apple-styled frosted glass widget directly in the bottom-right corner of ATS application forms with a **"⚡ 1-Click Autofill"** button.
-4. **Local AI Engine Sync**: Connects to your running AutoTailor dashboard at `http://localhost:8500` to access the Gemini 3.8 Flash Application Q&A solver!
+A Manifest V3 browser extension for **Shamir Khan (Wilfrid Laurier University - CS '28)** that provides autonomous in-page application autofill on all major ATS platforms (**IBM Careers, Workday, Greenhouse, Lever, Ashby, SmartRecruiters, iCIMS, Eightfold, Taleo, Brassring**).
 
 ---
 
-## 10-Second Quick Setup Guide
+## What It Does (JobRight & Simplify Powerhouse)
 
-1. Open **Google Chrome** (or Microsoft Edge, Brave, Arc).
-2. In the URL address bar, navigate to:
+1. **In-Page Floating Apple Dock**: Injects an Apple-styled frosted glass widget in the bottom-right corner of any job application form (e.g. IBM Careers, Greenhouse, Workday).
+2. **⚡ 1-Click Step Autofill**: Fills first/last name, email, phone, address, university, degree, major, GPA (3.8), links, work auth (Canada = Yes, Sponsorship = No), and legal checkboxes.
+3. **🔄 Auto-Pilot Mode**: Automatically detects when you advance to Step 2, Step 3, Step 4 in multi-page applications and fills out each new page automatically!
+4. **📄 1-Click Copy Resume Plain-Text**: Perfect for applications like **IBM Careers** that offer a *"Copy & Paste"* application option — copies Shamir's complete formatted resume instantly to clipboard.
+5. **📋 Quick-Copy Data Drawer**: Instant copy chips for GPA (3.8), Laurier CS, phone, address, LinkedIn, GitHub, and default PDF path.
+6. **🤖 Gemini AI Application Q&A Solver**: Built-in assistant to answer custom screening questions (*"Why do you want to join IBM?"*, *"Describe a technical project"*) tailored to Shamir's real projects (AlphaPulse, CloudGuard, ConHacks).
+
+---
+
+## 10-Second Setup Guide
+
+1. Open **Google Chrome** (or Edge, Brave, Arc).
+2. Go to:
    ```
    chrome://extensions
    ```
 3. In the top-right corner, toggle **Developer mode** to **ON**.
-4. Click the **Load unpacked** button (top left).
-5. Select the `extension` folder located at:
+4. Click **Load unpacked** (top-left).
+5. Select this folder:
    ```
    C:\Users\shami\OneDrive\Desktop\Coding\Full-Stack Projects\Internship-AI-Agent\extension
    ```
-6. The extension is now active! You will see the **⚡ AutoTailor AI** icon in your browser toolbar.
+   *(If already loaded, simply click the small 🔄 reload icon on the AutoTailor extension card to load the latest code!)*
+6. Pin the **⚡ AutoTailor AI** icon to your browser toolbar!
 
 ---
 
-## How to Use
+## How to Apply on IBM Careers (or any job)
 
-1. Browse internships on your AutoTailor dashboard at [http://localhost:8500](http://localhost:8500).
-2. Click **"↗ Direct Apply"** on any job card to open the company's application page.
-3. Look at the bottom right corner of the page: the **⚡ AutoTailor AI** floating pill widget will appear automatically.
-4. Click **"⚡ 1-Click Autofill"**:
-   - First Name, Last Name, Email, Phone
-   - LinkedIn, GitHub, Portfolio URL
-   - Wilfrid Laurier University, Computer Science, Class of 2028
-   - Work Authorization = Yes, Sponsorship = No
-5. Use the extension icon in your toolbar anytime to solve custom application questions using **Gemini 3.8 Flash**!
+1. When you're on the IBM application page (like shown in your screenshot):
+2. Look at the bottom-right corner: the **AutoTailor AI** frosted dock is docked and ready.
+3. If choosing **"Copy & Paste"**, click **"📄 Copy Resume"** on the AutoTailor dock — your complete technical resume is copied, paste it with `Ctrl+V`!
+4. If choosing **"From Device"**, your resume is located at:
+   `C:\Users\shami\OneDrive\Desktop\Resumes\Shamir_Khan_SWE_Latest.pdf`
+5. On the next pages (Contact Info, Experience, Education, Diversity/Legal):
+   - Click **"⚡ 1-Click Autofill This Step"** OR toggle **"🔄 Auto-Pilot: ON"** so every page fills itself as you click Next!
+6. For custom questions, click **📋** to open the drawer and ask the AI solver!

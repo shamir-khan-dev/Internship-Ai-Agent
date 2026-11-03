@@ -23,9 +23,22 @@
                 <span class="status-pulse"></span>
                 <span class="status-text">Gemini 3.8 Flash Active</span>
             </div>
+            <!-- Apple-Style Global View Switcher -->
+            <nav class="header-quick-nav">
+                <button class="nav-pill active" data-target-tab="tab-auto-apply">📡 Radar & Jobs</button>
+                <button class="nav-pill" data-target-tab="tab-qa">⚡ Paste & Answer</button>
+                <button class="nav-pill" data-target-tab="tab-resume">🎯 Resume Studio</button>
+                <button class="nav-pill" data-target-tab="tab-cover-letter">✍️ Cover Letter</button>
+            </nav>
         </div>
         <div class="header-right">
-            <span class="master-badge">📄 Master Template: <code>shamir_khan_swe_resume.tex</code></span>
+            <div class="header-shortcuts-tip" title="Use / to search, J/K to navigate, A to toggle applied, Esc to close">
+                <span class="kbd-hint">/</span> Search <span class="kbd-hint">J</span><span class="kbd-hint">K</span> Nav <span class="kbd-hint">A</span> Applied
+            </div>
+            <button id="btn-toggle-theme" class="btn-ghost theme-toggle-btn" title="Toggle Theme (Dark / Light)">
+                <span id="theme-icon">🌙</span> <span id="theme-label">Dark</span>
+            </button>
+            <a href="/graphify/graph.html" target="_blank" rel="noopener noreferrer" class="btn-ghost" title="Explore interactive 3D Knowledge Sphere of Architecture & Memory">🌐 Knowledge Sphere</a>
             <button id="btn-view-master" class="btn-secondary">View Master</button>
         </div>
     </header>
@@ -112,9 +125,34 @@
 
                 <div class="tailor-controls">
                     <input type="text" id="custom-instructions" placeholder="Custom tweak instructions (e.g. 'Prioritize AlphaPulse & Python', 'Focus on Kafka & C++')" />
-                    <button id="btn-tailor-resume" class="btn-primary">
-                        <span>✨ Generate Tailored Resume</span>
-                    </button>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <button id="btn-improve-resume" class="btn-accent" style="white-space:nowrap;padding:10px 16px;background:linear-gradient(135deg, #10b981, #059669);border:none;border-radius:10px;color:#fff;font-weight:600;cursor:pointer;">
+                            <span>🚀 Audit & Improve Resume</span>
+                        </button>
+                        <button id="btn-tailor-resume" class="btn-primary">
+                            <span>✨ Generate Tailored Resume</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- AI Resume Improvement Drawer / Card -->
+                <div id="resume-improvement-box" class="summary-banner hidden" style="background:rgba(16, 185, 129, 0.08);border:1px solid rgba(16, 185, 129, 0.25);margin-bottom:14px;">
+                    <div class="summary-header" style="border-bottom:1px solid rgba(16, 185, 129, 0.2);padding-bottom:10px;margin-bottom:10px;">
+                        <span class="badge-success" style="background:#10b981;color:#fff;font-weight:bold;">ATS Potential: <strong id="imp-ats-score">96%</strong></span>
+                        <div class="tailor-meta-badges">
+                            <span id="imp-provider-badge" class="badge-accent">Gemini AI Auditor</span>
+                            <button id="btn-close-improvement" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;">✕ Close</button>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:10px;">
+                        <strong style="color:var(--text-primary);font-size:13px;">🎯 Critical Action Items:</strong>
+                        <ul id="imp-critical-list" style="margin:6px 0 10px 18px;color:var(--text-secondary);font-size:12.5px;"></ul>
+                    </div>
+                    <div style="margin-bottom:10px;">
+                        <strong style="color:var(--text-primary);font-size:13px;">💎 High-Impact Bullet Upgrades:</strong>
+                        <div id="imp-bullets-container" style="display:flex;flex-direction:column;gap:8px;margin-top:6px;"></div>
+                    </div>
+                    <div id="imp-summary-quote" style="font-style:italic;color:var(--text-muted);font-size:12px;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(255,255,255,0.1);"></div>
                 </div>
 
                 <div id="tailoring-summary" class="summary-banner hidden">
@@ -191,29 +229,97 @@
                 </div>
             </div>
 
-            <!-- Tab 3: Application Q&A Solver -->
+            <!-- Tab 3: Application Copilot & Multi-Question Solver -->
             <div id="tab-qa" class="tab-content">
                 <div class="tab-header-row">
                     <div>
-                        <h3>Application Form & Interview Question Solver</h3>
-                        <p>Generate high-conviction answers for specific application prompts (e.g. Workday, Greenhouse, Pinpoint).</p>
+                        <h3>⚡ Application Copilot & Multi-Question Solver</h3>
+                        <p>Paste any raw job posting or entire Greenhouse / Lever application form. The AI extracts the company, role, requirements, and generates tailored answers for every single question with one-click copying.</p>
+                    </div>
+                    <div class="header-actions">
+                        <button id="btn-load-khan-sample" class="btn-ghost" title="Auto-fill with Khan Academy Greenhouse application">📄 Load Khan Academy Sample</button>
+                        <button id="btn-clear-bulk-qa" class="btn-ghost">Clear</button>
                     </div>
                 </div>
 
-                <div class="qa-input-box">
-                    <label for="qa-question-input">Paste Any Application Question:</label>
-                    <div class="input-btn-row">
-                        <input type="text" id="qa-question-input" placeholder="e.g. 'Why do you want to work at Coveo?', 'Describe a challenging technical project'" />
-                        <button id="btn-generate-qa" class="btn-primary">Generate Answer</button>
+                <!-- Mode Switcher -->
+                <div class="qa-mode-switcher">
+                    <button id="btn-mode-bulk" class="subtab-btn active">🚀 Paste Entire Job & Application</button>
+                    <button id="btn-mode-single" class="subtab-btn">💬 Single Question Solver</button>
+                </div>
+
+                <!-- Section 1: Bulk Paste Extractor -->
+                <div id="section-bulk-qa" class="qa-section-active">
+                    <div class="bulk-input-container">
+                        <label for="bulk-paste-input" class="field-label">
+                            <span>Paste Job Posting or Application Page (Questions, Job Info, Requirements):</span>
+                            <span class="field-hint">Extracts company, role, tech stack, and answers all application prompts</span>
+                        </label>
+                        <textarea id="bulk-paste-input" class="bulk-textarea" placeholder="Paste job posting or Greenhouse/Lever application text here... (e.g. Khan Academy Software Engineer Intern)"></textarea>
+                        
+                        <div class="bulk-actions-row">
+                            <button id="btn-extract-and-answer" class="btn-primary-glow">
+                                <span class="btn-icon">✨</span> Extract & Generate All Answers
+                            </button>
+                            <span id="bulk-status-text" class="status-indicator"></span>
+                        </div>
+                    </div>
+
+                    <!-- Extracted Job Overview Bar -->
+                    <div id="bulk-job-meta" class="bulk-job-meta-card hidden">
+                        <div class="meta-card-header">
+                            <div class="meta-title-group">
+                                <span id="meta-company-badge" class="badge-company">Target Company</span>
+                                <h3 id="meta-role-title">Software Engineering Intern</h3>
+                            </div>
+                            <div class="meta-badges-row">
+                                <span id="meta-location-pill" class="pill-meta">📍 Remote</span>
+                                <span id="meta-compensation-pill" class="pill-meta">💰 Competitive</span>
+                                <span id="meta-score-pill" class="pill-meta match-high">⚡ 96% Match</span>
+                            </div>
+                        </div>
+                        <div class="meta-card-tech">
+                            <span class="tech-label">Detected Tech Stack:</span>
+                            <div id="meta-tech-tags" class="tag-cloud"></div>
+                        </div>
+                    </div>
+
+                    <!-- Generated Q&A Results Container -->
+                    <div id="bulk-results-section" class="bulk-results-section hidden">
+                        <div class="results-header-bar">
+                            <div class="results-count-title">
+                                <span class="results-icon">🎯</span>
+                                <h4>Tailored Application Answers (<span id="qa-questions-count">0</span> Questions Detected)</h4>
+                            </div>
+                            <button id="btn-copy-all-qa" class="btn-secondary" title="Copy all answers formatted with question headings">
+                                📋 Copy All Answers
+                            </button>
+                        </div>
+
+                        <!-- List of dynamic question cards -->
+                        <div id="bulk-qa-cards-list" class="bulk-qa-cards-list">
+                            <!-- Dynamically injected Q&A cards -->
+                        </div>
                     </div>
                 </div>
 
-                <div class="textarea-card">
-                    <div class="card-toolbar">
-                        <span>Tailored Responses (High-Impact + Punchy Variations)</span>
-                        <button id="btn-copy-qa" class="btn-ghost">📋 Copy Answer</button>
+                <!-- Section 2: Single Question Solver (Preserved) -->
+                <div id="section-single-qa" class="qa-section-hidden hidden">
+                    <div class="qa-input-box">
+                        <label for="qa-question-input">Paste Any Single Application Question:</label>
+                        <div class="input-btn-row">
+                            <input type="text" id="qa-question-input" placeholder="e.g. 'Why do you want to work at Coveo?', 'Describe a challenging technical project'" />
+                            <button id="btn-generate-qa" class="btn-primary">Generate Answer</button>
+                        </div>
                     </div>
-                    <textarea id="qa-output" placeholder="Your tailored answer will appear here..."></textarea>
+
+                    <div class="textarea-card">
+                        <div class="card-toolbar">
+                            <span>Tailored Responses (High-Impact + Punchy Variations)</span>
+                            <button id="btn-copy-qa" class="btn-ghost">📋 Copy Answer</button>
+                        </div>
+                        <textarea id="qa-output" placeholder="Your tailored answer will appear here..."></textarea>
+                    </div>
                 </div>
             </div>
 
@@ -230,37 +336,41 @@
                 <div class="stats-ribbon">
                     <div class="stat-pill"><span class="stat-val" id="stat-total-val">1,750+</span> <span class="stat-lbl">Active Roles</span></div>
                     <div class="stat-pill fresh"><span class="stat-val" id="stat-fresh-val">140+</span> <span class="stat-lbl">Fresh (&le; 20h)</span></div>
-                    <div class="stat-pill quant"><span class="stat-val" id="stat-quant-val">100+</span> <span class="stat-lbl">Quant & Trading</span></div>
+                    <div class="stat-pill applied"><span class="stat-val" id="stat-applied-val">0</span> <span class="stat-lbl">Applied ✓</span></div>
+                    <div class="stat-pill frontend"><span class="stat-val" id="stat-frontend-val">180+</span> <span class="stat-lbl">Frontend & UI</span></div>
                     <div class="stat-pill ai"><span class="stat-val" id="stat-ai-val">300+</span> <span class="stat-lbl">AI & ML</span></div>
-                    <div class="stat-pill system"><span class="stat-val" id="stat-system-val">70+</span> <span class="stat-lbl">Systems & C++</span></div>
+                    <div class="stat-pill system"><span class="stat-val" id="stat-system-val">350+</span> <span class="stat-lbl">Backend & Systems</span></div>
                     <div class="stat-pill saved"><span class="stat-val" id="stat-saved-val">0</span> <span class="stat-lbl">Saved / Tracked</span></div>
                 </div>
 
-                <!-- Geographic Market Selector -->
+                <!-- Geographic & Application Status Selector -->
                 <div class="filter-pill-group">
                     <span class="filter-group-lbl">Market:</span>
                     <button class="market-pill active" data-country="all">🌐 All Locations (US, CA, Remote)</button>
                     <button class="market-pill" data-country="ca">🇨🇦 Canada Only</button>
                     <button class="market-pill" data-country="us">🇺🇸 United States</button>
                     <button class="market-pill" data-country="remote">☁️ Remote Only</button>
-                    <button class="market-pill" data-country="saved" id="btn-show-saved">⭐ Saved / Applied (<span id="saved-count-num">0</span>)</button>
+                    <button class="market-pill" data-country="unapplied" id="btn-show-unapplied">⚡ New / Unapplied</button>
+                    <button class="market-pill" data-country="applied" id="btn-show-applied">✅ Applied (<span id="applied-count-num">0</span>)</button>
+                    <button class="market-pill" data-country="saved" id="btn-show-saved">⭐ Saved (<span id="saved-count-num">0</span>)</button>
                 </div>
 
                 <!-- Technical Domain Selector -->
                 <div class="filter-pill-group">
-                    <span class="filter-group-lbl">Domain:</span>
-                    <button class="domain-pill active" data-domain="all">All Disciplines</button>
-                    <button class="domain-pill" data-domain="quant">📈 Quant & Trading</button>
-                    <button class="domain-pill" data-domain="backend">⚙️ Backend & Systems (C++)</button>
-                    <button class="domain-pill" data-domain="ai">🤖 AI & Machine Learning</button>
-                    <button class="domain-pill" data-domain="cloud">🛡️ Cloud & Security</button>
-                    <button class="domain-pill" data-domain="fullstack">🌐 Full-Stack & Web</button>
+                    <span class="filter-group-lbl">Track:</span>
+                    <button class="domain-pill active" data-domain="all">💻 All SWE Roles</button>
+                    <button class="domain-pill" data-domain="backend">⚙️ Backend & Systems</button>
+                    <button class="domain-pill" data-domain="frontend">🎨 Frontend & UI</button>
+                    <button class="domain-pill" data-domain="fullstack">🌐 Full-Stack Web</button>
+                    <button class="domain-pill" data-domain="ai">🤖 AI / ML Systems</button>
+                    <button class="domain-pill" data-domain="cloud">🛡️ Cloud & Infra</button>
+                    <button class="domain-pill" data-domain="mobile">📱 Mobile (iOS/Android)</button>
                 </div>
 
                 <!-- Radar Filters -->
                 <div class="radar-search-bar">
-                    <input type="text" id="radar-search-query" placeholder="Search title, company, skills (e.g. 'Citadel', 'Python', 'Kafka', 'Vision')..." />
-                    <input type="text" id="radar-search-location" placeholder="City or state filter (e.g. 'Toronto', 'NYC', 'Remote')..." />
+                    <input type="text" id="radar-search-query" placeholder="Search title, company, skills (e.g. 'IBM', 'Verkada', 'Shopify', 'React', 'Kafka')..." />
+                    <input type="text" id="radar-search-location" placeholder="City or state filter (e.g. 'Toronto', 'Waterloo', 'NYC', 'Remote')..." />
                     <select id="radar-time-filter" class="time-filter-select">
                         <option value="20">🔥 Posted &le; 20h ago (Fresh Only)</option>
                         <option value="24">⚡ Posted &le; 24h ago</option>
@@ -272,8 +382,15 @@
                     </button>
                 </div>
 
-                <!-- JobRight-style Extension Banner -->
-                <div class="extension-guide-card">
+                <!-- Radar Utility Bar (Apple-style compact controls) -->
+                <div class="radar-utility-bar">
+                    <button id="btn-toggle-ext" class="utility-toggle-btn" type="button">🧩 Chrome Extension (JobRight Style) ▾</button>
+                    <button id="btn-toggle-profile" class="utility-toggle-btn" type="button">👤 Candidate Profile (Shamir Khan) ▾</button>
+                    <a href="/api/audit-report" target="_blank" class="utility-link-badge">🛡️ Dates & Direct Links: 100% Verified ↗</a>
+                </div>
+
+                <!-- Collapsible Extension Guide Card -->
+                <div id="ext-guide-drawer" class="extension-guide-card collapsible-drawer hidden">
                     <div class="ext-badge-col">
                         <span class="ext-icon">🧩</span>
                         <div>
@@ -286,8 +403,8 @@
                     </div>
                 </div>
 
-                <!-- Candidate Profile Snapshot Card -->
-                <div class="profile-snapshot-card">
+                <!-- Collapsible Candidate Profile Snapshot Card -->
+                <div id="profile-snapshot-drawer" class="profile-snapshot-card collapsible-drawer hidden">
                     <div class="snapshot-header">
                         <span>👤 Verified Candidate Profile (Autofill Source)</span>
                         <span class="badge-success">Ready to Auto-Apply</span>
@@ -311,12 +428,24 @@
                     <p id="bot-console-msg">Launching Playwright browser engine...</p>
                 </div>
 
-                <!-- Live Jobs Table / Grid -->
-                <div class="jobs-table-container">
+                <!-- Live Jobs Table / Grid (Directly below filters for 100% immediate visibility) -->
+                <div class="jobs-table-container" id="jobs-container-anchor">
                     <div class="table-header-title">
-                        <span>🔥 Verified Live SWE Internships</span>
+                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                            <span>🔥 Verified Live SWE Internships</span>
+                            <span class="badge-success" style="font-size: 11px; padding: 2px 8px; border-radius: 999px;">🛡️ Dates 100% Verified</span>
+                            <span class="badge-neutral" style="font-size: 11px; padding: 2px 8px; border-radius: 999px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3);">🔗 100% Direct ATS Portals</span>
+                        </div>
                         <span id="jobs-count-badge" class="badge-neutral">Scanning live feeds...</span>
                     </div>
+
+                    <!-- Live Active Filter Indicator Banner -->
+                    <div id="active-filter-indicator" class="active-filter-banner hidden">
+                        <span class="indicator-pulse"></span>
+                        <span id="active-filter-text">Showing All Roles</span>
+                        <button id="btn-clear-active-filters" class="btn-clear-filter">Reset to All</button>
+                    </div>
+
                     <div id="jobs-cards-list" class="jobs-list">
                         <!-- Loaded dynamically via /api/jobs -->
                     </div>
@@ -341,6 +470,99 @@
             </div>
         </div>
     </div>
+
+    <!-- Slide-out Job Detail Drawer (Apple Style Side Sheet) -->
+    <div id="drawer-backdrop" class="drawer-backdrop hidden"></div>
+    <aside id="job-detail-drawer" class="job-detail-drawer hidden" aria-label="Job Details" aria-hidden="true">
+        <div class="drawer-header">
+            <div class="drawer-company-meta">
+                <div id="drawer-avatar" class="drawer-avatar">??</div>
+                <div class="drawer-title-group">
+                    <h3 id="drawer-title" class="drawer-title">Job Title</h3>
+                    <div class="drawer-subtitle">
+                        <span id="drawer-company" class="drawer-company">Company</span>
+                        <span class="drawer-dot">•</span>
+                        <span id="drawer-location" class="drawer-location">Location</span>
+                        <span class="drawer-dot">•</span>
+                        <span id="drawer-term" class="drawer-term">Upcoming Term</span>
+                    </div>
+                </div>
+            </div>
+            <button id="btn-close-drawer" class="btn-close-drawer" aria-label="Close details (Escape)" title="Press Esc to close">✕</button>
+        </div>
+
+        <div class="drawer-body">
+            <!-- Primary Action Bar (Apple-style prominent buttons) -->
+            <div class="drawer-actions-bar">
+                <a id="drawer-direct-apply" href="#" target="_blank" rel="noopener noreferrer" class="btn-apple-primary" title="Open verified direct company portal">
+                    <span>Direct Apply on ATS</span>
+                    <span class="arrow-icon">↗</span>
+                </a>
+                <button id="drawer-tailor-btn" class="btn-apple-secondary" title="Tailor 1-Page LaTeX resume with targeted project ordering">
+                    <span>✨ Tailor Resume</span>
+                </button>
+                <button id="drawer-cover-letter-btn" class="btn-apple-secondary" title="Draft authentic cover letter tailored to this role">
+                    <span>✍️ Cover Letter</span>
+                </button>
+                <button id="drawer-applied-btn" class="btn-apple-secondary btn-drawer-applied" title="Keep checked if you applied to this internship">
+                    <span id="drawer-applied-icon">⬜</span>
+                    <span id="drawer-applied-text">Mark as Applied</span>
+                </button>
+                <button id="drawer-autofill-btn" class="btn-apple-secondary" title="Auto-fill application with Playwright bot">
+                    <span>⚡ Bot Autofill</span>
+                </button>
+            </div>
+
+            <!-- Meta Badges Pill Row -->
+            <div class="drawer-meta-badges">
+                <span id="drawer-time-badge" class="drawer-badge fresh">🕒 Posted</span>
+                <span id="drawer-country-badge" class="drawer-badge">🇨🇦 Market</span>
+                <span id="drawer-domain-badge" class="drawer-badge">⚙️ Domain</span>
+                <span id="drawer-match-badge" class="drawer-badge match">96% Match</span>
+                <span id="drawer-portal-badge" class="drawer-badge portal">Direct ATS Portal</span>
+            </div>
+
+            <!-- ATS Match & Targeted Skills Card -->
+            <div class="drawer-card">
+                <div class="drawer-card-header">
+                    <h4>🎯 Candidate ATS Match Breakdown</h4>
+                    <span id="drawer-score-pill" class="badge-success">96% Projected Match</span>
+                </div>
+                <div class="drawer-skills-grid">
+                    <div>
+                        <div class="skill-label">Matching Laurier Profile Skills:</div>
+                        <div id="drawer-matched-skills" class="tag-cloud"></div>
+                    </div>
+                    <div style="margin-top: 14px;">
+                        <div class="skill-label">Target Requisition Keywords:</div>
+                        <div id="drawer-target-skills" class="tag-cloud missing"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role Summary & Requisition Details -->
+            <div class="drawer-card">
+                <div class="drawer-card-header">
+                    <h4>📋 Position Details & ATS Metadata</h4>
+                </div>
+                <div id="drawer-description" class="drawer-job-desc">
+                    <!-- Dynamic Requisition summary loaded here -->
+                </div>
+            </div>
+
+            <!-- Quick Candidate Snapshot Card -->
+            <div class="drawer-card candidate-quick-card">
+                <div class="drawer-card-header">
+                    <h4>👤 Candidate Autofill Credentials</h4>
+                </div>
+                <div class="quick-profile-details">
+                    <div><strong>Candidate:</strong> Shamir Khan (Laurier CS '28, GPA 3.8)</div>
+                    <div><strong>Target Resume:</strong> <code>Shamir_Khan_SWE_Latest.pdf</code> (Verified 1-Page)</div>
+                    <div><strong>Authorization:</strong> Canada Citizen / Authorized (No visa sponsorship required)</div>
+                </div>
+            </div>
+        </div>
+    </aside>
 
     <!-- Apple Dynamic Island Style Notification Toast -->
     <div id="toast" class="toast hidden"></div>

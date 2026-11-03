@@ -6,3 +6,7 @@ env/
 .pytest_cache/
 *.log
 .DS_Store
+autofill_last_run.png
+tests/artifacts/
+backend/tailored_resumes/
+graphify-out/cache/

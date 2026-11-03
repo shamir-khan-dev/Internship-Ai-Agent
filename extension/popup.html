@@ -24,18 +24,22 @@
         <div class="profile-card">
             <div class="profile-header">
                 <strong>Shamir Khan</strong>
-                <span class="sub">Wilfrid Laurier University (CS)</span>
+                <span class="sub">Wilfrid Laurier University (CS '28)</span>
             </div>
             <div class="profile-meta">
-                <span>📍 Kitchener, ON</span>
-                <span>🎓 Class of 2028</span>
+                <span>📍 Waterloo / Kitchener</span>
+                <span>⭐ GPA: 3.8</span>
                 <span>🇨🇦 Work Auth: Yes</span>
             </div>
         </div>
 
         <!-- 1-Click Autofill Button -->
         <button id="btn-popup-autofill" class="btn-autofill">
-            <span>⚡ 1-Click Autofill Current Tab</span>
+            <span>⚡ 1-Click Autofill Current Step</span>
+        </button>
+
+        <button id="btn-popup-copy-resume" class="btn-secondary" style="margin-top: 6px; width: 100%;">
+            <span>📄 Copy Resume Plain-Text (for IBM / Workday)</span>
         </button>
 
         <div id="autofill-feedback" class="feedback-msg hidden"></div>
@@ -43,7 +47,7 @@
         <!-- Quick AI Q&A Solver -->
         <div class="qa-section">
             <div class="qa-label">Ask Gemini 3.8 Flash (Application Q&A):</div>
-            <input type="text" id="qa-input" placeholder="e.g. 'Why do you want to join this team?'" />
+            <input type="text" id="qa-input" placeholder="e.g. 'Why do you want to join IBM?'" />
             <button id="btn-popup-qa" class="btn-secondary">Solve with Gemini</button>
             <textarea id="qa-result" class="hidden" readonly placeholder="Tailored answer will appear here..."></textarea>
         </div>
